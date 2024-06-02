@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const { Schema, models, model } = mongoose
-const userSchema = new Schema({
+const usersSchema = new Schema({
     username: {
         type: String,
     },
@@ -28,6 +28,6 @@ const userSchema = new Schema({
     verifyTokenExpiry: Date,
 })
 
-const User = models.users || model('user', userSchema)
+const Users = models.users || model('users', usersSchema)
 
-export default User;
+export default Users;

@@ -16,22 +16,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-
-const ZSignupSchema = z.object({
-    email: z.string().email({
-        message: "Must be a valid email.",
-    }),
-    password: z.string().min(6, {
-        message: "password must be at least 6 characters.",
-    }),
-    confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not Match!',
-    path: ['confirmPassword']
-})
+import { SignupFormData, ZSignupSchema } from "@/lib/utils/definitions"
+import { UserSignup } from "@/lib/actions/auth.actions"
 
 export function SignupForm() {
-    const form = useForm<z.infer<typeof ZSignupSchema>>({
+    const form = useForm<SignupFormData>({
         resolver: zodResolver(ZSignupSchema),
         defaultValues: {
             email: "",
@@ -40,7 +29,9 @@ export function SignupForm() {
         },
     })
 
-    function onSubmit(data: z.infer<typeof ZSignupSchema>) {
+    async function onSubmit(data: SignupFormData) {
+        const result = await UserSignup(data)
+        console.log('SIgnup Result: ', result)
         toast({
             title: "You submitted the following values:",
             description: (
@@ -119,7 +110,7 @@ export function SignupForm() {
                         )}
                     />
                 </div>
-                <Button type="submit" className="w-full shadow items-end">Create account</Button>
+                <Button type="submit" className="w-full shadow">Create account</Button>
             </form>
         </Form>
     )

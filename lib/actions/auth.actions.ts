@@ -1,0 +1,55 @@
+'use server'
+
+import { connectToDatabase } from "../database/db.connect";
+import Users from "@/lib/models/user.model";
+import { SignupFormData, ZSignupSchema } from "../utils/definitions";
+import bcrypt from 'bcrypt';
+
+export async function UserSignup(formData: SignupFormData) {
+    const validatedFields = ZSignupSchema.safeParse(formData)
+    console.log('valiatedFields :: ', validatedFields)
+
+    if (!validatedFields.success) {
+        const serverValidationErrors = Object.fromEntries(validatedFields?.error?.issues.map(({ path, message }) => [path[0], message]))
+        return {
+            errors: serverValidationErrors,
+            success: false
+        }
+    }
+    try {
+        await connectToDatabase()
+        const { email, password, confirmPassword } = validatedFields.data
+        const user = await Users.findOne({ email })
+        console.log('user exists :: ', user)
+
+        if (user) {
+            return {
+                formError: 'Users Already Exists!',
+                success: false
+            }
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+        const newUser = new Users({
+            email,
+            password: hashedPassword
+        })
+        let savedUser = await newUser.save()
+        savedUser = JSON.parse(JSON.stringify(savedUser))
+        console.log('saved user :: ', savedUser)
+
+        return {
+            message: 'User Successfully Created',
+            user: savedUser,
+            success: true
+        }
+
+
+    } catch (error: any) {
+        return {
+            formError: 'Server Error: Failed to signup!',
+            status: 500,
+            success: false
+        }
+    }
+}
