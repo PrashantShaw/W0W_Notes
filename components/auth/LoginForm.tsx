@@ -16,22 +16,21 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { SignupFormData, ZSignupSchema } from "@/lib/utils/definitions"
-import { SignupAction } from "@/lib/actions/auth.actions"
+import { LoginFormData, ZLoginSchema } from "@/lib/utils/definitions"
+import { LoginAction, SignupAction } from "@/lib/actions/auth.actions"
 
-export function SignupForm() {
-    const form = useForm<SignupFormData>({
-        resolver: zodResolver(ZSignupSchema),
+export function LoginForm() {
+    const form = useForm<LoginFormData>({
+        resolver: zodResolver(ZLoginSchema),
         defaultValues: {
             email: "",
             password: "",
-            confirmPassword: "",
         },
     })
 
-    async function onSubmit(data: SignupFormData) {
-        const result = await SignupAction(data)
-        console.log('SIgnup Result: ', result)
+    async function onSubmit(data: LoginFormData) {
+        const result = await LoginAction(data)
+        console.log('Login Result: ', result)
         toast({
             title: "You submitted the following values:",
             description: (
@@ -56,7 +55,7 @@ export function SignupForm() {
                                     <Input
                                         {...field}
                                         type="email"
-                                        placeholder="user@example.com"
+                                        placeholder="Enter your email"
                                         className={clsx(
                                             'shadow-sm',
                                             error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
@@ -77,28 +76,7 @@ export function SignupForm() {
                                     <Input
                                         {...field}
                                         type="password"
-                                        placeholder="Enter a Password"
-                                        className={clsx(
-                                            'shadow-sm',
-                                            error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
-                                        )}
-                                    />
-                                </FormControl>
-                                <FormMessage className="text-xs" />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="confirmPassword"
-                        render={({ field, fieldState: { error } }) => (
-                            <FormItem>
-                                <FormLabel className="text-gray-700">Confirm Password</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        type="password"
-                                        placeholder="Enter Confirm Password"
+                                        placeholder="Enter your Password"
                                         className={clsx(
                                             'shadow-sm',
                                             error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
@@ -110,7 +88,7 @@ export function SignupForm() {
                         )}
                     />
                 </div>
-                <Button type="submit" className="w-full shadow">Create account</Button>
+                <Button type="submit" className="w-full shadow">Sign In</Button>
             </form>
         </Form>
     )

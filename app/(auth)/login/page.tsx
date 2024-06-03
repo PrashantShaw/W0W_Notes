@@ -1,5 +1,3 @@
-import { SignupForm } from '@/components/auth/SignupForm'
-import React from 'react'
 import {
     Card,
     CardContent,
@@ -8,22 +6,23 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { LoginForm } from '@/components/auth/LoginForm'
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
-const SignupPage = () => {
+const LoginPage = () => {
     return (
         <div className='min-h-screen flex justify-center items-center border'>
             <Card className='relative w-[28rem] min-h-[32rem] shadow'>
                 <div className="absolute right-6 top-6">
-                    <LoginButton />
+                    <SignupButton />
                 </div>
                 <CardHeader>
-                    <CardTitle>Create an account</CardTitle>
-                    <CardDescription>Enter your email below to create your account</CardDescription>
+                    <CardTitle>User Sign In</CardTitle>
+                    <CardDescription>Enter your credentials to sign in</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <SignupForm />
+                    <LoginForm />
                 </CardContent>
                 {/* <CardFooter>
                 </CardFooter> */}
@@ -33,14 +32,14 @@ const SignupPage = () => {
     )
 }
 
-const LoginButton = () => {
+const SignupButton = () => {
     return <Button
         variant={"ghost"}
         size={'sm'}
         asChild
     >
-        <Link href="/login">Login</Link>
+        <Link href="/signup">Sign Up</Link>
     </Button>
 }
 
-export default SignupPage
+export default LoginPage

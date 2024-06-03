@@ -13,4 +13,14 @@ export const ZSignupSchema = z.object({
     path: ['confirmPassword']
 })
 
+export const ZLoginSchema = z.object({
+    email: z.string().email({
+        message: "Must be a valid email.",
+    }),
+    password: z.string().min(1, {
+        message: "Required!",
+    }),
+})
+
 export type SignupFormData = z.infer<typeof ZSignupSchema>
+export type LoginFormData = z.infer<typeof ZLoginSchema>

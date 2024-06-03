@@ -2,10 +2,11 @@
 
 import { connectToDatabase } from "../database/db.connect";
 import Users from "@/lib/models/user.model";
-import { SignupFormData, ZSignupSchema } from "../utils/definitions";
+import { LoginFormData, SignupFormData, ZSignupSchema } from "../utils/definitions";
 import bcrypt from 'bcrypt';
+import { signIn } from "@/auth/auth.config";
 
-export async function UserSignup(formData: SignupFormData) {
+export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
     console.log('valiatedFields :: ', validatedFields)
 
@@ -48,6 +49,19 @@ export async function UserSignup(formData: SignupFormData) {
     } catch (error: any) {
         return {
             formError: 'Server Error: Failed to signup!',
+            status: 500,
+            success: false
+        }
+    }
+}
+
+export async function LoginAction(formData: LoginFormData) {
+    try {
+        const loginRes = await signIn('credentials', formData)
+        console.log('login response :: ', loginRes)
+    } catch (error: any) {
+        return {
+            formError: 'Server Error: Failed to Login!',
             status: 500,
             success: false
         }
