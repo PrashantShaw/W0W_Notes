@@ -5,6 +5,8 @@ import Users from "@/lib/models/user.model";
 import { LoginFormData, SignupFormData, ZSignupSchema } from "../utils/definitions";
 import bcrypt from 'bcrypt';
 import { signIn } from "@/auth/auth.config";
+import { redirect } from "next/navigation";
+import { AuthError } from "next-auth";
 
 export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
@@ -57,13 +59,34 @@ export async function SignupAction(formData: SignupFormData) {
 
 export async function LoginAction(formData: LoginFormData) {
     try {
-        const loginRes = await signIn('credentials', formData)
-        console.log('login response :: ', loginRes)
+        const { email, password } = formData
+        await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+        })
+
     } catch (error: any) {
-        return {
-            formError: 'Server Error: Failed to Login!',
-            status: 500,
-            success: false
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return {
+                        formError: 'Invalid credentials.',
+                        message: error.message,
+                        status: 500,
+                        success: false
+                    }
+                default:
+                    return {
+                        formError: 'Server Error: Failed to Login!',
+                        message: error.message,
+                        status: 500,
+                        success: false
+                    }
+            }
         }
+        throw error;
     }
+
+    redirect("/dashboard")
 }

@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import clsx from "clsx"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { LoginFormData, ZLoginSchema } from "@/lib/utils/definitions"
-import { LoginAction, SignupAction } from "@/lib/actions/auth.actions"
+import { LoginAction } from "@/lib/actions/auth.actions"
+import { ToastAction } from "@/components/ui/toast"
 
 export function LoginForm() {
     const form = useForm<LoginFormData>({
@@ -30,15 +30,15 @@ export function LoginForm() {
 
     async function onSubmit(data: LoginFormData) {
         const result = await LoginAction(data)
+
         console.log('Login Result: ', result)
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+        if (result && !result?.success) {
+            toast({
+                variant: 'destructive',
+                title: result?.formError,
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+            })
+        }
     }
 
     return (
