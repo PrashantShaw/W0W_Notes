@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import clsx from "clsx"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +17,9 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { SignupFormData, ZSignupSchema } from "@/lib/utils/definitions"
 import { SignupAction } from "@/lib/actions/auth.actions"
+import { useRouter } from "next/navigation"
+import { CircleCheckBig, LoaderCircle } from "lucide-react"
+import { ToastAction } from "@/components/ui/toast"
 
 export function SignupForm() {
     const form = useForm<SignupFormData>({
@@ -28,18 +30,34 @@ export function SignupForm() {
             confirmPassword: "",
         },
     })
+    const router = useRouter()
 
     async function onSubmit(data: SignupFormData) {
         const result = await SignupAction(data)
-        console.log('SIgnup Result: ', result)
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+        // console.log('SIgnup Result: ', result)
+        if (result?.success) {
+            router.push('/login')
+            toast({
+                duration: 10_000,
+                description: (<>
+                    <div className="flex items-center gap-2 mb-2"><CircleCheckBig color="green" />
+                        <p className="font-semibold text-lg text-slate-800">{result.message}</p>
+                    </div>
+                    <p>Please Sign In to continue!</p>
+                </>)
+            })
+        }
+        if (result?.formError) {
+            toast({
+                duration: 10_000,
+                variant: "destructive",
+                title: result?.formError,
+                action: (
+                    <ToastAction altText="Login" onClick={() => router.push('/login')} >
+                        Login
+                    </ToastAction>)
+            })
+        }
     }
 
     return (
@@ -110,8 +128,21 @@ export function SignupForm() {
                         )}
                     />
                 </div>
-                <Button type="submit" className="w-full shadow">Create account</Button>
+                <CreateAccountButton isSumitting={form.formState.isSubmitting} />
             </form>
         </Form>
     )
+}
+
+const CreateAccountButton = ({ isSumitting = false }) => {
+
+    const btnTxt = isSumitting ? 'Loading' : 'Create Account'
+    const btnIcon = isSumitting ? <LoaderCircle className="animate-spin mr-2" /> : ''
+    return <Button
+        disabled={isSumitting}
+        type="submit"
+        className="w-full shadow"
+    >
+        {btnIcon} {btnTxt}
+    </Button>
 }

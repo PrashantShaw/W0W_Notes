@@ -7,10 +7,14 @@ import bcrypt from 'bcrypt';
 import { signIn } from "@/auth/auth.config";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
+import { sleep } from "@/lib/helpers/auth.helpers";
 
 export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
     console.log('valiatedFields :: ', validatedFields)
+
+    // TODO: remove before deployment
+    // await sleep();
 
     if (!validatedFields.success) {
         const serverValidationErrors = Object.fromEntries(validatedFields?.error?.issues.map(({ path, message }) => [path[0], message]))

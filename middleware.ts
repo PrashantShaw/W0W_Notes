@@ -16,9 +16,6 @@ export default authMiddleware((request) => {
     const isLoggedIn = !!auth
     const isProtectedRoute = protectedRoutes.some((route) => nextUrl.pathname.startsWith(route))
     const isAuthRoute = authRoutes.some((route) => nextUrl.pathname.startsWith(route))
-    const response = NextResponse.next()
-    console.log('From Middleware, Auth :: ', auth)
-    console.log('isProtectedRoute :: ', isProtectedRoute, isLoggedIn)
 
     if (isProtectedRoute && !isLoggedIn) {
         const loginUrl = new URL("/login", nextUrl.origin)
@@ -28,8 +25,6 @@ export default authMiddleware((request) => {
         const dashboardUrl = new URL("/dashboard", nextUrl.origin)
         return NextResponse.redirect(dashboardUrl)
     }
-
-    return response;
 })
 
 export const config = {

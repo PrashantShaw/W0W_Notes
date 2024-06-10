@@ -18,6 +18,7 @@ import { toast } from "@/components/ui/use-toast"
 import { LoginFormData, ZLoginSchema } from "@/lib/utils/definitions"
 import { LoginAction } from "@/lib/actions/auth.actions"
 import { ToastAction } from "@/components/ui/toast"
+import { LoaderCircle } from "lucide-react"
 
 export function LoginForm() {
     const form = useForm<LoginFormData>({
@@ -31,7 +32,7 @@ export function LoginForm() {
     async function onSubmit(data: LoginFormData) {
         const result = await LoginAction(data)
 
-        console.log('Login Result: ', result)
+        // console.log('Login Result: ', result)
         if (result && !result?.success) {
             toast({
                 variant: 'destructive',
@@ -88,8 +89,21 @@ export function LoginForm() {
                         )}
                     />
                 </div>
-                <Button type="submit" className="w-full shadow">Sign In</Button>
+                <SignInButton isSumitting={form.formState.isSubmitting} />
             </form>
         </Form>
     )
+}
+
+const SignInButton = ({ isSumitting = false }) => {
+
+    const btnTxt = isSumitting ? 'Loading' : 'Sign In'
+    const btnIcon = isSumitting ? <LoaderCircle className="animate-spin mr-3" /> : ''
+    return <Button
+        disabled={isSumitting}
+        type="submit"
+        className="w-full shadow"
+    >
+        {btnIcon} {btnTxt}
+    </Button>
 }
