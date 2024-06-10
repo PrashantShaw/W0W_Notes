@@ -1,3 +1,4 @@
+import { authenticateLogin } from "@/lib/helpers/auth.helpers";
 import { ZLoginSchema } from "@/lib/utils/definitions";
 import NextAuth from "next-auth"
 import credentials from "next-auth/providers/credentials";
@@ -17,14 +18,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 const validatedFields = ZLoginSchema.safeParse(credentials)
                 console.log('ValidatedFields :: ', validatedFields)
                 if (!validatedFields.success) {
+                    const serverValidationErrors = Object.fromEntries(validatedFields?.error?.issues.map(({ path, message }) => [path[0], message]))
                     return null;
                 }
 
                 const { email, password } = validatedFields.data
-                const user = { email }
-                // TODO: search for user and match the password
+                const authResult = await authenticateLogin(email, password)
 
-                return user
+                console.log('AuthResult :: ', authResult)
+                return authResult
             },
         }),
     ],

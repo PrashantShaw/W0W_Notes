@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { IUser } from "@/lib/models/user.model";
 
 export const ZSignupSchema = z.object({
     email: z.string().email({
@@ -24,3 +25,10 @@ export const ZLoginSchema = z.object({
 
 export type SignupFormData = z.infer<typeof ZSignupSchema>
 export type LoginFormData = z.infer<typeof ZLoginSchema>
+
+export type LoginResponse = {
+    message: string
+    status: number
+    success: boolean
+    user?: IUser
+}

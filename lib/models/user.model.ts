@@ -1,6 +1,19 @@
 import mongoose from "mongoose";
 
 const { Schema, models, model } = mongoose
+
+export interface IUser extends Document {
+    username?: string;
+    email: string;
+    password: string;
+    isVerified: boolean;
+    isAdmin: boolean;
+    forgotPasswordToken?: string;
+    forgotPasswordTokenExpiry?: Date;
+    verifyToken?: string;
+    verifyTokenExpiry?: Date;
+}
+
 const usersSchema = new Schema({
     username: {
         type: String,
@@ -28,6 +41,6 @@ const usersSchema = new Schema({
     verifyTokenExpiry: Date,
 })
 
-const Users = models.users || model('users', usersSchema)
+const Users = models.users || model<IUser>('users', usersSchema)
 
 export default Users;

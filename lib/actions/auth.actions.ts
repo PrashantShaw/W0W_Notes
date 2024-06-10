@@ -1,13 +1,12 @@
 'use server'
 
 import { connectToDatabase } from "../database/db.connect";
-import Users from "@/lib/models/user.model";
+import Users, { IUser } from "@/lib/models/user.model";
 import { LoginFormData, SignupFormData, ZSignupSchema } from "../utils/definitions";
 import bcrypt from 'bcrypt';
 import { signIn } from "@/auth/auth.config";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
-import { sleep } from "@/lib/helpers/auth.helpers";
 
 export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
@@ -26,7 +25,7 @@ export async function SignupAction(formData: SignupFormData) {
     try {
         await connectToDatabase()
         const { email, password, confirmPassword } = validatedFields.data
-        const user = await Users.findOne({ email })
+        const user = await Users.findOne<IUser | null>({ email })
         console.log('user exists :: ', user)
 
         if (user) {
@@ -41,7 +40,7 @@ export async function SignupAction(formData: SignupFormData) {
             email,
             password: hashedPassword
         })
-        let savedUser = await newUser.save()
+        let savedUser: IUser = await newUser.save()
         savedUser = JSON.parse(JSON.stringify(savedUser))
         console.log('saved user :: ', savedUser)
 
