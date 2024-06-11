@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 
 const DashboardPage = async () => {
-    // FIXME: auth session object only contains 'email'
     const session = await auth();
     // console.log('Login Page - session :: ', session)
     return (
