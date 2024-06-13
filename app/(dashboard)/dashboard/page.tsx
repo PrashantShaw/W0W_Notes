@@ -15,7 +15,7 @@ const DashboardPage = async () => {
                 <Input type="text" placeholder="Search" />
                 <Button asChild>
                     <Link href='/dashboard/notes/create'>
-                        <Plus strokeWidth={1.5} className='mr-1' />
+                        <Plus strokeWidth={1.5} className='mr-2' />
                         <p className=''>Create</p>
                     </Link>
                 </Button>

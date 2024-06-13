@@ -39,3 +39,13 @@ export type LinkItemProps = {
     isActive?: boolean
     icon?: React.ReactElement
 }
+
+export const ZNoteSchema = z.object({
+    title: z.string().min(3, { message: "Title must be at least 3 characters.", }),
+    description: z.string().min(3, { message: "Description must be at least 3 characters.", }),
+    priority: z.string().min(1),
+    status: z.string().min(1),
+    label: z.string().min(1),
+})
+
+export type NoteFormData = z.infer<typeof ZNoteSchema>

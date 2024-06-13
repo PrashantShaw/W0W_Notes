@@ -1,0 +1,178 @@
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
+import { NoteFormData, ZNoteSchema } from "@/lib/utils/definitions"
+import clsx from "clsx"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+
+
+const defaultValues = {
+    title: '',
+    description: '',
+    priority: 'Medium',
+    status: 'Backlog',
+    label: 'Bug',
+}
+
+export function NoteForm({ formValues = defaultValues }) {
+    const form = useForm<NoteFormData>({
+        resolver: zodResolver(ZNoteSchema),
+        defaultValues: formValues,
+    })
+
+    function onSubmit(data: NoteFormData) {
+        console.log('Create Note Data :: ', data)
+        toast({
+            title: "You submitted the following values:",
+            description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                </pre>
+            ),
+        })
+    }
+
+    return (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field, fieldState: { error } }) => (
+                        <FormItem className=" relative">
+                            <FormLabel className="text-gray-700">Title</FormLabel>
+                            <FormControl>
+                                <Input
+                                    {...field}
+                                    type="text"
+                                    placeholder="Enter the Title"
+                                    className={clsx(
+                                        'shadow-sm',
+                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
+                                    )}
+                                />
+                            </FormControl>
+                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field, fieldState: { error } }) => (
+                        <FormItem className=" relative">
+                            <FormLabel className="text-gray-700">Description</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    {...field}
+                                    rows={5}
+                                    placeholder="Description of the Note"
+                                    className={clsx(
+                                        'shadow-sm resize-none',
+                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
+                                    )}
+                                />
+                            </FormControl>
+                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                        </FormItem>
+                    )}
+                />
+                <div className="grid grid-cols-3 gap-5 pb-5">
+                    <FormField
+                        control={form.control}
+                        name="priority"
+                        render={({ field, fieldState: { error } }) => (
+                            <FormItem className=" relative">
+                                <FormLabel className="text-gray-700">Priority</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="shadow-sm">
+                                            <SelectValue placeholder="Select the Priority" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Low">Low</SelectItem>
+                                        <SelectItem value="Medium">Medium</SelectItem>
+                                        <SelectItem value="High">High</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field, fieldState: { error } }) => (
+                            <FormItem className=" relative">
+                                <FormLabel className="text-gray-700">Status</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="shadow-sm">
+                                            <SelectValue placeholder="Select the Priority" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="ToDo">ToDo</SelectItem>
+                                        <SelectItem value="In Progress">InProgress</SelectItem>
+                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                        <SelectItem value="Done">Done</SelectItem>
+                                        <SelectItem value="Backlog">Backlog</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="label"
+                        render={({ field, fieldState: { error } }) => (
+                            <FormItem className=" relative">
+                                <FormLabel className="text-gray-700">Label</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="shadow-sm">
+                                            <SelectValue placeholder="Select the Priority" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Bug">Bug</SelectItem>
+                                        <SelectItem value="Feature">Feature</SelectItem>
+                                        <SelectItem value="Documentation">Documentation</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <Button type="submit">Create Note</Button>
+            </form>
+        </Form>
+    )
+}
+
+/**
+ * title
+ * description
+ * priority -> Low|Medium|High
+ * status -> ToDo|In Progress|Cancelled|Done|Backlog
+ * label -> Bug|Feature|Documentation
+ */

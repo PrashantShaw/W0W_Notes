@@ -29,6 +29,7 @@ const SideNavLinks = () => {
                 const isActive = pathname === href
                 return (
                     <LinkItem
+                        key={idx}
                         label={label}
                         href={href}
                         isActive={isActive}
