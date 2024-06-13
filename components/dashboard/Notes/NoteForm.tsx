@@ -2,8 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -20,6 +18,8 @@ import { NoteFormData, ZNoteSchema } from "@/lib/utils/definitions"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { LoaderCircle } from "lucide-react"
+import { sleep } from "@/lib/helpers/auth.helpers"
 
 
 const defaultValues = {
@@ -36,7 +36,10 @@ export function NoteForm({ formValues = defaultValues }) {
         defaultValues: formValues,
     })
 
-    function onSubmit(data: NoteFormData) {
+    async function onSubmit(data: NoteFormData) {
+        // TODO: remove sleep() from prod
+        await sleep(2000)
+
         console.log('Create Note Data :: ', data)
         toast({
             title: "You submitted the following values:",
@@ -51,49 +54,7 @@ export function NoteForm({ formValues = defaultValues }) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
-                <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field, fieldState: { error } }) => (
-                        <FormItem className=" relative">
-                            <FormLabel className="text-gray-700">Title</FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    type="text"
-                                    placeholder="Enter the Title"
-                                    className={clsx(
-                                        'shadow-sm',
-                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
-                                    )}
-                                />
-                            </FormControl>
-                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field, fieldState: { error } }) => (
-                        <FormItem className=" relative">
-                            <FormLabel className="text-gray-700">Description</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    {...field}
-                                    rows={5}
-                                    placeholder="Description of the Note"
-                                    className={clsx(
-                                        'shadow-sm resize-none',
-                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
-                                    )}
-                                />
-                            </FormControl>
-                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
-                        </FormItem>
-                    )}
-                />
-                <div className="grid grid-cols-3 gap-5 pb-5">
+                <div className="grid grid-cols-3 gap-5 ">
                     <FormField
                         control={form.control}
                         name="priority"
@@ -163,10 +124,66 @@ export function NoteForm({ formValues = defaultValues }) {
                         )}
                     />
                 </div>
-                <Button type="submit">Create Note</Button>
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field, fieldState: { error } }) => (
+                        <FormItem className=" relative">
+                            <FormLabel className="text-gray-700">Title</FormLabel>
+                            <FormControl>
+                                <Input
+                                    {...field}
+                                    type="text"
+                                    placeholder="Enter the Title"
+                                    className={clsx(
+                                        'shadow-sm',
+                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
+                                    )}
+                                />
+                            </FormControl>
+                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field, fieldState: { error } }) => (
+                        <FormItem className=" relative">
+                            <FormLabel className="text-gray-700">Description</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    {...field}
+                                    rows={5}
+                                    placeholder="Description of the Note"
+                                    className={clsx(
+                                        'shadow-sm resize-none',
+                                        error ? 'ring-2 ring-red-600 focus-visible:ring-red-600' : ''
+                                    )}
+                                />
+                            </FormControl>
+                            <FormMessage className="text-xs absolute -bottom-5 left-0" />
+                        </FormItem>
+                    )}
+                />
+                <div className=""></div>
+                <CreateNoteButton isSumitting={form.formState.isSubmitting} />
             </form>
         </Form>
     )
+}
+
+const CreateNoteButton = ({ isSumitting = false }) => {
+
+    const btnTxt = isSumitting ? 'Creating' : 'Create Note'
+    const btnIcon = isSumitting ? <LoaderCircle className="animate-spin mr-3" /> : ''
+    return <Button
+        disabled={isSumitting}
+        type="submit"
+        className="shadow w-[12rem]"
+    >
+        {btnIcon} {btnTxt}
+    </Button>
 }
 
 /**

@@ -7,13 +7,13 @@ const LinkItem = ({ label, href, isActive = false, icon }: LinkItemProps) => {
 
     return (
         <Link href={href}>
-            <div className={clsx("py-2 px-5 flex justify-between items-center hover:bg-slate-50 transition-all",
-                isActive && 'bg-slate-100 hover:bg-slate-100'
+            <div className={clsx("py-2 px-5 flex justify-between items-center transition-all",
+                isActive ? 'bg-slate-100 hover:bg-slate-100' : 'hover:bg-slate-50'
             )}>
                 <div className="flex gap-2 items-center">
-                    {icon}<p className='text-slate-600'>{label}</p>
+                    {icon}<p className={clsx('text-slate-700', isActive && 'text-slate-950')}>{label}</p>
                 </div>
-                <ChevronRight className='text-slate-400 h-5' />
+                <ChevronRight className={clsx('text-slate-400 h-5', isActive && 'text-slate-600')} />
             </div>
         </Link>
     )
