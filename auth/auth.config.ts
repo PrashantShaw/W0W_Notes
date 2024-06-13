@@ -32,7 +32,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         signIn: '/login',
     },
     session: {
-        maxAge: 60 * 30 // in secs
+        maxAge: 60 * 30, // 30 mins
+        strategy: 'jwt',
+        updateAge: 60 * 10
     },
     providers: [
         credentials({

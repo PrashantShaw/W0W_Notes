@@ -32,3 +32,10 @@ export type LoginResponse = {
     success: boolean
     user?: IUser
 }
+
+export type LinkItemProps = {
+    label: string
+    href: string
+    isActive?: boolean
+    icon?: React.ReactElement
+}
