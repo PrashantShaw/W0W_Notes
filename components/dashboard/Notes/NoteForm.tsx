@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { LoaderCircle } from "lucide-react"
 import { sleep } from "@/lib/helpers/auth.helpers"
+import { createNoteAction } from "@/lib/actions/dashboard.actions"
 
 
 const defaultValues = {
@@ -37,10 +38,10 @@ export function NoteForm({ formValues = defaultValues }) {
     })
 
     async function onSubmit(data: NoteFormData) {
-        // TODO: remove sleep() from prod
-        await sleep(2000)
-
         console.log('Create Note Data :: ', data)
+        const result = await createNoteAction(data)
+        console.log('Create Note Result :: ', result)
+
         toast({
             title: "You submitted the following values:",
             description: (

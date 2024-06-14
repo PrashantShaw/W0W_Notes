@@ -1,19 +1,7 @@
 import mongoose from "mongoose";
+import { IUser } from "@/lib/utils/definitions";
 
 const { Schema, models, model } = mongoose
-
-export interface IUser extends Document {
-    _id: string
-    username?: string;
-    email: string;
-    password: string;
-    isVerified: boolean;
-    isAdmin: boolean;
-    forgotPasswordToken?: string;
-    forgotPasswordTokenExpiry?: Date;
-    verifyToken?: string;
-    verifyTokenExpiry?: Date;
-}
 
 const usersSchema = new Schema({
     username: {

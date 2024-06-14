@@ -1,8 +1,8 @@
 'use server'
 
-import { connectToDatabase } from "../database/db.connect";
-import Users, { IUser } from "@/lib/models/user.model";
-import { LoginFormData, SignupFormData, ZSignupSchema } from "../utils/definitions";
+import { connectToDatabase } from "@/lib/database/db.connect";
+import Users from "@/lib/models/user.model";
+import { IUser, LoginFormData, SignupFormData, ZSignupSchema } from "@/lib/utils/definitions";
 import bcrypt from 'bcrypt';
 import { signIn } from "@/auth/auth.config";
 import { redirect } from "next/navigation";

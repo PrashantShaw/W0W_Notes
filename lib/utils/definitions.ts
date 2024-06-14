@@ -1,5 +1,5 @@
+import { Schema } from "mongoose";
 import { z } from "zod";
-import { IUser } from "@/lib/models/user.model";
 
 export const ZSignupSchema = z.object({
     email: z.string().email({
@@ -25,6 +25,30 @@ export const ZLoginSchema = z.object({
 
 export type SignupFormData = z.infer<typeof ZSignupSchema>
 export type LoginFormData = z.infer<typeof ZLoginSchema>
+
+export interface IUser extends Document {
+    _id: string
+    username?: string;
+    email: string;
+    password: string;
+    isVerified: boolean;
+    isAdmin: boolean;
+    forgotPasswordToken?: string;
+    forgotPasswordTokenExpiry?: Date;
+    verifyToken?: string;
+    verifyTokenExpiry?: Date;
+}
+
+export interface INote extends Document {
+    title: string;
+    description: string;
+    priority: 'Low' | 'Medium' | 'High';
+    status: 'ToDo' | 'In Progress' | 'Cancelled' | 'Done' | 'Backlog';
+    label: 'Bug' | 'Feature' | 'Documentation';
+    user: typeof Schema.Types.ObjectId;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 
 export type LoginResponse = {
     message: string

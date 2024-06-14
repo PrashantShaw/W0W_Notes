@@ -1,13 +1,16 @@
 import { auth } from '@/auth/auth.config'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input';
+import { getNotes } from '@/lib/helpers/dashboard.helpers';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
 
 const DashboardPage = async () => {
     const session = await auth();
-    // console.log('Login Page - session :: ', session)
+    const userId = session?.user.userId
+    const notes = await getNotes(userId);
+    console.log('Dashboard page, notes :: ', notes)
     return (<>
         <div className='flex flex-col p-10 gap-6'>
             <h1 className='text-3xl text-slate-700 font-semibold'>All Notes</h1>
@@ -19,6 +22,11 @@ const DashboardPage = async () => {
                         <p className=''>Create</p>
                     </Link>
                 </Button>
+            </div>
+            <div className="">
+                {notes.map((note, idx) => {
+                    return <pre key={idx}>{JSON.stringify(note, null, 2)}</pre>
+                })}
             </div>
         </div>
     </>)
