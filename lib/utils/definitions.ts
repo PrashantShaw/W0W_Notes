@@ -1,3 +1,4 @@
+import { ColumnDef } from "@tanstack/react-table";
 import { Schema } from "mongoose";
 import { z } from "zod";
 
@@ -73,3 +74,8 @@ export const ZNoteSchema = z.object({
 })
 
 export type NoteFormData = z.infer<typeof ZNoteSchema>
+
+export type DataTableProps<TData, TValue> = {
+    columns: ColumnDef<TData, TValue>[]
+    data: Array<TData>
+}
