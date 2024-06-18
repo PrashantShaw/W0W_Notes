@@ -12,7 +12,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, CircleCheckBig, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -32,15 +32,15 @@ import {
 } from "@/components/ui/table"
 import { DataTableProps } from "@/lib/utils/definitions"
 import { useState } from "react"
-// TODO: pass data and columns a props
+import { deleteManyNotes } from "@/lib/actions/dashboard.actions"
+import { toast } from "@/components/ui/use-toast"
 
-// export function DataTable<TData extends { id?: string }, TValue>({
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { _id?: string }, TValue>({
     columns: tableCols,
     data: tableData
 }: DataTableProps<TData, TValue>) {
 
-    const [data] = useState(tableData)
+    const [data, setData] = useState(tableData)
     const [columns] = useState(tableCols)
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -68,46 +68,77 @@ export function DataTable<TData, TValue>({
             rowSelection,
             columnVisibility,
         },
-        // getRowId: (originalRow, index, parent) => originalRow.id ?? String(index),
+        getRowId: (originalRow, index, parent) => originalRow._id ?? String(index),
     })
 
+    // console.log('dataTable data :: ', data)
+
+    // FIXME: search filter is not working on 'Date Time' column
     return (
         <div className="w-full">
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                    placeholder="Search"
+                    value={globalFilter}
                     onChange={(event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
+                        table.setGlobalFilter(event.target.value)
                     }
                     className="max-w-sm"
                 />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown className="ml-2 h-4 w-4" />
+                <div className="flex gap-3">
+                    <form action={async () => {
+                        const noteIdsList = Object.keys(rowSelection)
+                        const delResult = await deleteManyNotes(noteIdsList)
+                        if (delResult.success && delResult.data?.deletedCount! > 0) {
+                            setData(rest => rest.filter(note => !noteIdsList.includes(note._id!)))
+                            toast({
+                                description: (
+                                    <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                                        <p className="font-semibold text-slate-800">{delResult.data?.deletedCount!} Note(s) Successfully Deleted!</p>
+                                    </div>
+                                ),
+                            })
+
+                        }
+                    }}>
+                        <Button
+                            type="submit"
+                            variant="outline"
+                            size="icon"
+                            className=""
+                            disabled={Object.keys(rowSelection).length === 0}
+                        // onClick={() => console.log(Object.keys(rowSelection))}
+                        >
+                            <Trash2 className="h-4 w-4" />
                         </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    </form>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-auto">
+                                Columns <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={(value) =>
+                                                column.toggleVisibility(!!value)
+                                            }
+                                        >
+                                            {column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
             <div className="rounded-md border">
                 <Table>

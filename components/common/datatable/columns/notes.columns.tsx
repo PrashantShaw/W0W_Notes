@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { INote } from "@/lib/utils/definitions"
+import { Badge } from "@/components/ui/badge"
+import date from 'date-and-time';
 
 export const notesColumns: ColumnDef<INote>[] = [
     {
@@ -30,13 +32,6 @@ export const notesColumns: ColumnDef<INote>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
-        ),
-    },
-    {
         accessorKey: "title",
         header: ({ column }) => {
             return (
@@ -49,7 +44,10 @@ export const notesColumns: ColumnDef<INote>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
+        cell: ({ row }) => <div className="lowercase">
+            <Badge variant="outline" className="rounded mr-3">{row.original.label}</Badge>
+            {row.getValue("title")}
+        </div>,
     },
     {
         accessorKey: "priority",
@@ -59,11 +57,22 @@ export const notesColumns: ColumnDef<INote>[] = [
         ),
     },
     {
-        accessorKey: "label",
-        header: "Label",
+        accessorKey: "status",
+        header: "Status",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("label")}</div>
+            <div className="capitalize">{row.getValue("status")}</div>
         ),
+    },
+    {
+        accessorKey: "datetime",
+        header: "Date Time",
+        cell: ({ row }) => {
+            const createdAt = row.original.createdAt
+            const dateTime = new Date(createdAt!)
+            const datTimeFormatted = date.format(dateTime!, "DD/MM/YYYY hh:mm:ss A")
+            // console.log("dateTime :: ", datTimeFormatted)
+            return <div className="capitalize">{datTimeFormatted}</div>
+        },
     },
     {
         id: "actions",

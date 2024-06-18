@@ -18,7 +18,7 @@ import { NoteFormData, ZNoteSchema } from "@/lib/utils/definitions"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { LoaderCircle } from "lucide-react"
+import { CircleCheckBig, LoaderCircle } from "lucide-react"
 import { sleep } from "@/lib/helpers/auth.helpers"
 import { createNoteAction } from "@/lib/actions/dashboard.actions"
 
@@ -43,11 +43,10 @@ export function NoteForm({ formValues = defaultValues }) {
         console.log('Create Note Result :: ', result)
 
         toast({
-            title: "You submitted the following values:",
             description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
+                <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                    <p className="font-semibold text-slate-900">Note Successfully Created!</p>
+                </div>
             ),
         })
     }

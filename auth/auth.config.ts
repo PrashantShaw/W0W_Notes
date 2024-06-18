@@ -1,6 +1,5 @@
 import { authenticateLogin } from "@/lib/helpers/auth.helpers";
-import { IUser } from "@/lib/models/user.model";
-import { ZLoginSchema } from "@/lib/utils/definitions";
+import { IUser, ZLoginSchema } from "@/lib/utils/definitions";
 import NextAuth, { DefaultSession, User } from "next-auth"
 import credentials from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt"

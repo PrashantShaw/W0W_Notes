@@ -5,6 +5,8 @@ import { connectToDatabase } from "@/lib/database/db.connect";
 import Notes from "@/lib/models/notes.model";
 import { auth } from "@/auth/auth.config";
 import { redirect } from "next/navigation";
+import { getNormalObject } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export async function createNoteAction(noteData: NoteFormData) {
     try {
@@ -32,7 +34,7 @@ export async function createNoteAction(noteData: NoteFormData) {
             user: session?.user.userId
         })
         let savedNote: INote = await newNote.save()
-        savedNote = JSON.parse(JSON.stringify(savedNote))
+        savedNote = getNormalObject(savedNote)
         console.log('saved Note :: ', savedNote)
 
         // return {
@@ -50,4 +52,26 @@ export async function createNoteAction(noteData: NoteFormData) {
     }
 
     redirect('/dashboard')
+}
+
+export async function deleteManyNotes(noteIdsList: string[]) {
+    try {
+        console.log('noteIdsList :: ', noteIdsList)
+        const deleteResult = await Notes.deleteMany({ _id: { $in: noteIdsList } });
+        console.log('delete result :: ', deleteResult)
+        return {
+            message: 'Note Successfully Created',
+            data: deleteResult,
+            success: true,
+            status: 200
+        }
+    } catch (error: any) {
+        return {
+            message: 'Server Error: Failed to Delete Notes!', error,
+            data: null,
+            success: false,
+            status: 500,
+        }
+    }
+    // revalidatePath('/dashboard')
 }

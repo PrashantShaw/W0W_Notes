@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import { signIn } from "@/auth/auth.config";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
+import { getNormalObject } from "@/lib/utils";
 
 export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
@@ -41,7 +42,7 @@ export async function SignupAction(formData: SignupFormData) {
             password: hashedPassword
         })
         let savedUser: IUser = await newUser.save()
-        savedUser = JSON.parse(JSON.stringify(savedUser))
+        savedUser = getNormalObject(savedUser)
         console.log('saved user :: ', savedUser)
 
         return {
