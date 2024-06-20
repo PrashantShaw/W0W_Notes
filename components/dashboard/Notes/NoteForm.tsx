@@ -91,7 +91,7 @@ export function NoteForm({ formValues = defaultValues }) {
                                     </FormControl>
                                     <SelectContent>
                                         <SelectItem value="ToDo">ToDo</SelectItem>
-                                        <SelectItem value="In Progress">InProgress</SelectItem>
+                                        <SelectItem value="In Progress">In Progress</SelectItem>
                                         <SelectItem value="Cancelled">Cancelled</SelectItem>
                                         <SelectItem value="Done">Done</SelectItem>
                                         <SelectItem value="Backlog">Backlog</SelectItem>

@@ -69,9 +69,52 @@ export function DataTable<TData extends { _id?: string }, TValue>({
             columnVisibility,
         },
         getRowId: (originalRow, index, parent) => originalRow._id ?? String(index),
+        meta: {
+            updateData: (rowId: string, columnName: string, value: string) => {
+                setData(oldData =>
+                    oldData.map(row => {
+                        if (row._id === rowId) {
+                            return {
+                                ...row,
+                                [columnName]: value
+                            }
+                        }
+                        return row;
+                    })
+                )
+            },
+        },
     })
 
-    // console.log('dataTable data :: ', data)
+    console.log('dataTable data :: ', data)
+    function DeleteManyIconButton() {
+        return <form action={async () => {
+            const noteIdsList = Object.keys(rowSelection)
+            const delResult = await deleteManyNotes(noteIdsList)
+            if (delResult.success && delResult.data?.deletedCount! > 0) {
+                setData(rest => rest.filter(note => !noteIdsList.includes(note._id!)))
+                toast({
+                    description: (
+                        <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                            <p className="font-semibold text-slate-800">{delResult.data?.deletedCount!} Note(s) Successfully Deleted!</p>
+                        </div>
+                    ),
+                })
+
+            }
+        }}>
+            <Button
+                type="submit"
+                variant="outline"
+                size="icon"
+                className=""
+                disabled={Object.keys(rowSelection).length === 0}
+            // onClick={() => console.log(Object.keys(rowSelection))}
+            >
+                <Trash2 className="h-4 w-4" />
+            </Button>
+        </form>
+    }
 
     // FIXME: search filter is not working on 'Date Time' column
     return (
@@ -86,32 +129,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                     className="max-w-sm"
                 />
                 <div className="flex gap-3">
-                    <form action={async () => {
-                        const noteIdsList = Object.keys(rowSelection)
-                        const delResult = await deleteManyNotes(noteIdsList)
-                        if (delResult.success && delResult.data?.deletedCount! > 0) {
-                            setData(rest => rest.filter(note => !noteIdsList.includes(note._id!)))
-                            toast({
-                                description: (
-                                    <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
-                                        <p className="font-semibold text-slate-800">{delResult.data?.deletedCount!} Note(s) Successfully Deleted!</p>
-                                    </div>
-                                ),
-                            })
-
-                        }
-                    }}>
-                        <Button
-                            type="submit"
-                            variant="outline"
-                            size="icon"
-                            className=""
-                            disabled={Object.keys(rowSelection).length === 0}
-                        // onClick={() => console.log(Object.keys(rowSelection))}
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </form>
+                    <DeleteManyIconButton />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">
@@ -217,3 +235,6 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         </div>
     )
 }
+
+
+
