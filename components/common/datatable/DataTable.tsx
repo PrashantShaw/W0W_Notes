@@ -2,6 +2,7 @@
 
 import {
     ColumnFiltersState,
+    RowData,
     RowSelectionState,
     SortingState,
     VisibilityState,
@@ -34,6 +35,21 @@ import { DataTableProps } from "@/lib/utils/definitions"
 import { useState } from "react"
 import { deleteManyNotes } from "@/lib/actions/dashboard.actions"
 import { toast } from "@/components/ui/use-toast"
+import { UpdateNoteData } from "./columns/notes.columns"
+
+/** 
+ * Below declarations of module is for adding the 'updateData' function 
+ * to the "@tanstack/react-table" meta, and then use it as-
+ * table.options.meta?.updateData(rowId, 'status', 'Done')
+*/
+declare module '@tanstack/table-core' {
+    interface TableMeta<TData extends RowData> {
+        updateData: (
+            rowId: string,
+            update: Partial<Omit<TData, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
+        ) => void;
+    }
+}
 
 export function DataTable<TData extends { _id?: string }, TValue>({
     columns: tableCols,
@@ -70,13 +86,16 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         },
         getRowId: (originalRow, index, parent) => originalRow._id ?? String(index),
         meta: {
-            updateData: (rowId: string, columnName: string, value: string) => {
+            updateData: (
+                rowId: string,
+                update: Partial<Omit<TData, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
+            ) => {
                 setData(oldData =>
                     oldData.map(row => {
                         if (row._id === rowId) {
                             return {
                                 ...row,
-                                [columnName]: value
+                                ...update
                             }
                         }
                         return row;

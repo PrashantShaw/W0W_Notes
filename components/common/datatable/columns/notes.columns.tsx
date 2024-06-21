@@ -1,19 +1,19 @@
 'use client'
+
 import { Checkbox } from "@/components/ui/checkbox"
-import { ColumnDef, RowData } from "@tanstack/react-table"
+import { ColumnDef, TableMeta } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Circle, CircleCheck, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { ArrowUpDown, Circle, CircleCheck, CircleCheckBig, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, Pencil, Trash } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { INote } from "@/lib/utils/definitions"
 import { Badge } from "@/components/ui/badge"
 import date from 'date-and-time';
+import { updateNote } from "@/lib/actions/dashboard.actions"
+import { toast } from "@/components/ui/use-toast"
 
 
-declare module '@tanstack/table-core' {
-    interface TableMeta<TData extends RowData> {
-        updateData: (rowId: string, columnName: string, value: string) => void;
-    }
-}
+export type UpdateNoteData = Partial<Omit<INote, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
+
 const statusIcons = {
     ToDo: Circle,
     'In Progress': CircleDotDashed,
@@ -21,6 +21,21 @@ const statusIcons = {
     Done: CircleCheck,
     Backlog: CircleHelp,
 }
+
+export async function updateTableData(itemId: string, update: UpdateNoteData, onSuccessFn: TableMeta<INote>['updateData']) {
+    const result = await updateNote(itemId, update)
+    if (result.success) {
+        onSuccessFn(itemId, update)
+        toast({
+            description: (
+                <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                    <p className="font-semibold text-slate-900">Note Successfully Updated!</p>
+                </div>
+            ),
+        })
+    }
+}
+
 export const notesColumns: ColumnDef<INote>[] = [
     {
         id: "select",
@@ -114,7 +129,8 @@ export const notesColumns: ColumnDef<INote>[] = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem className="flex items-center"
                             onClick={() => {
-                                table.options.meta?.updateData(rowId, 'status', 'Done')
+                                const onSuccessFn = table.options.meta?.updateData!
+                                updateTableData(rowId, { status: 'Done' }, onSuccessFn)
                             }}
                         >
                             <CircleCheck className="mr-2 h-4 w-4 text-slate-600" /> Done
