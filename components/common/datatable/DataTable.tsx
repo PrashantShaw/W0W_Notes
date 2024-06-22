@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown, CircleCheckBig, Trash2 } from "lucide-react"
+import { ChevronDown, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,9 +33,6 @@ import {
 } from "@/components/ui/table"
 import { DataTableProps } from "@/lib/utils/definitions"
 import { useState } from "react"
-import { deleteManyNotes } from "@/lib/actions/dashboard.actions"
-import { toast } from "@/components/ui/use-toast"
-import { UpdateNoteData } from "./columns/notes.columns"
 
 /** 
  * Below declarations of module is for adding the 'updateData' function 
@@ -48,12 +45,14 @@ declare module '@tanstack/table-core' {
             rowId: string,
             update: Partial<Omit<TData, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
         ) => void;
+        deleteData: (rowIdList: string[]) => void;
     }
 }
 
 export function DataTable<TData extends { _id?: string }, TValue>({
     columns: tableCols,
-    data: tableData
+    data: tableData,
+    deleteHandler
 }: DataTableProps<TData, TValue>) {
 
     const [data, setData] = useState(tableData)
@@ -91,49 +90,19 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                 update: Partial<Omit<TData, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
             ) => {
                 setData(oldData =>
-                    oldData.map(row => {
-                        if (row._id === rowId) {
-                            return {
-                                ...row,
-                                ...update
-                            }
-                        }
-                        return row;
-                    })
+                    oldData.map(row =>
+                        row._id === rowId ?
+                            { ...row, ...update } : row
+                    )
                 )
+            },
+            deleteData: (rowIdList: string[]) => {
+                setData(rest => rest.filter(note => !rowIdList.includes(note._id!)))
             },
         },
     })
 
     console.log('dataTable data :: ', data)
-    function DeleteManyIconButton() {
-        return <form action={async () => {
-            const noteIdsList = Object.keys(rowSelection)
-            const delResult = await deleteManyNotes(noteIdsList)
-            if (delResult.success && delResult.data?.deletedCount! > 0) {
-                setData(rest => rest.filter(note => !noteIdsList.includes(note._id!)))
-                toast({
-                    description: (
-                        <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
-                            <p className="font-semibold text-slate-800">{delResult.data?.deletedCount!} Note(s) Successfully Deleted!</p>
-                        </div>
-                    ),
-                })
-
-            }
-        }}>
-            <Button
-                type="submit"
-                variant="outline"
-                size="icon"
-                className=""
-                disabled={Object.keys(rowSelection).length === 0}
-            // onClick={() => console.log(Object.keys(rowSelection))}
-            >
-                <Trash2 className="h-4 w-4" />
-            </Button>
-        </form>
-    }
 
     // FIXME: search filter is not working on 'Date Time' column
     return (
@@ -142,13 +111,20 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                 <Input
                     placeholder="Search"
                     value={globalFilter}
-                    onChange={(event) =>
-                        table.setGlobalFilter(event.target.value)
-                    }
+                    onChange={(event) => table.setGlobalFilter(event.target.value)}
                     className="max-w-sm"
                 />
                 <div className="flex gap-3">
-                    <DeleteManyIconButton />
+                    <Button
+                        type="submit"
+                        variant="outline"
+                        size="icon"
+                        disabled={Object.keys(rowSelection).length === 0}
+                        onClick={() => deleteHandler && deleteHandler(Object.keys(rowSelection), table.options.meta?.deleteData!)}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">

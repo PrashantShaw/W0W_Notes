@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, TableMeta } from "@tanstack/react-table";
 import { Schema } from "mongoose";
 import { z } from "zod";
 
@@ -79,4 +79,5 @@ export type NoteFormData = z.infer<typeof ZNoteSchema>
 export type DataTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
     data: Array<TData>
+    deleteHandler?: (noteIdList: string[], tableDataDeleteHandler: TableMeta<INote>["deleteData"]) => Promise<void>
 }

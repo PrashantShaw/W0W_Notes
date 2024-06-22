@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { INote } from "@/lib/utils/definitions"
 import { Badge } from "@/components/ui/badge"
 import date from 'date-and-time';
-import { updateNote } from "@/lib/actions/dashboard.actions"
+import { deleteManyNotes, updateNote } from "@/lib/actions/dashboard.actions"
 import { toast } from "@/components/ui/use-toast"
 
 
@@ -22,7 +22,11 @@ const statusIcons = {
     Backlog: CircleHelp,
 }
 
-export async function updateTableData(itemId: string, update: UpdateNoteData, onSuccessFn: TableMeta<INote>['updateData']) {
+async function updateTableData(
+    itemId: string,
+    update: UpdateNoteData,
+    onSuccessFn: TableMeta<INote>['updateData']
+) {
     const result = await updateNote(itemId, update)
     if (result.success) {
         onSuccessFn(itemId, update)
@@ -30,6 +34,23 @@ export async function updateTableData(itemId: string, update: UpdateNoteData, on
             description: (
                 <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
                     <p className="font-semibold text-slate-900">Note Successfully Updated!</p>
+                </div>
+            ),
+        })
+    }
+}
+
+async function deleteTableData(
+    itemIdList: string[],
+    onSuccessFn: TableMeta<INote>['deleteData']
+) {
+    const result = await deleteManyNotes(itemIdList)
+    if (result.success) {
+        onSuccessFn(itemIdList)
+        toast({
+            description: (
+                <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                    <p className="font-semibold text-slate-900">Note Successfully Deleted!</p>
                 </div>
             ),
         })
@@ -127,22 +148,27 @@ export const notesColumns: ColumnDef<INote>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem className="flex items-center"
-                            onClick={() => {
-                                const onSuccessFn = table.options.meta?.updateData!
-                                updateTableData(rowId, { status: 'Done' }, onSuccessFn)
-                            }}
+                        <DropdownMenuItem
+                            className="flex items-center"
+                            onClick={() => updateTableData(rowId, { status: 'Done' }, (table.options.meta?.updateData!))}
                         >
                             <CircleCheck className="mr-2 h-4 w-4 text-slate-600" /> Done
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center">
-                            <CircleDotDashed className="mr-2 h-4 w-4 text-slate-600" /> In Progress
+                        <DropdownMenuItem
+                            onClick={() => updateTableData(rowId, { status: 'In Progress' }, (table.options.meta?.updateData!))}
+                            className="flex items-center"
+                        >
+                            <CircleDotDashed className="mr-2 h-4 w-4 text-slate-600" />
+                            In Progress
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="flex items-center">
                             <Pencil className="mr-2 h-4 w-4 text-slate-600" />Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center">
+                        <DropdownMenuItem
+                            className="flex items-center"
+                            onClick={() => deleteTableData([rowId], (table.options.meta?.deleteData!))}
+                        >
                             <Trash className="mr-2 h-4 w-4 text-slate-600" /> Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>
