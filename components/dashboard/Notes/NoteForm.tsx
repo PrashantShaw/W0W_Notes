@@ -14,13 +14,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { NoteFormData, ZNoteSchema } from "@/lib/utils/definitions"
+import { INote, NoteFormData, ZNoteSchema } from "@/lib/utils/definitions"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { CircleCheckBig, LoaderCircle } from "lucide-react"
 import { sleep } from "@/lib/helpers/auth.helpers"
-import { createNoteAction } from "@/lib/actions/dashboard.actions"
+import { createOrUpdateNoteAction } from "@/lib/actions/dashboard.actions"
+import { ToastAction } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 
 const defaultValues = {
@@ -31,24 +34,40 @@ const defaultValues = {
     label: 'Bug',
 }
 
-export function NoteForm({ formValues = defaultValues }) {
+type NoteFormProps = {
+    formValues?: INote
+}
+
+export function NoteForm({ formValues }: NoteFormProps) {
     const form = useForm<NoteFormData>({
         resolver: zodResolver(ZNoteSchema),
-        defaultValues: formValues,
+        defaultValues: formValues ?? defaultValues,
     })
+    const router = useRouter()
+    const isEditing = !!formValues
 
     async function onSubmit(data: NoteFormData) {
-        console.log('Create Note Data :: ', data)
-        const result = await createNoteAction(data)
-        console.log('Create Note Result :: ', result)
+        // console.log('Create Note Data :: ', data)
+        const result = await createOrUpdateNoteAction(data, formValues?._id)
+        // console.log('Create Note Result :: ', result)
 
-        toast({
-            description: (
-                <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
-                    <p className="font-semibold text-slate-900">Note Successfully Created!</p>
-                </div>
-            ),
-        })
+        if (result.success) {
+            toast({
+                description: (
+                    <div className="flex items-center gap-4 mb-2"><CircleCheckBig color="green" />
+                        <p className="font-semibold text-slate-900">{result.message}</p>
+                    </div>
+                ),
+            })
+            router.push('/dashboard')
+        }
+        else {
+            toast({
+                variant: 'destructive',
+                title: result?.message,
+                action: <ToastAction altText="Try again">Try again</ToastAction>
+            })
+        }
     }
 
     return (
@@ -167,15 +186,30 @@ export function NoteForm({ formValues = defaultValues }) {
                     )}
                 />
                 <div className=""></div>
-                <CreateNoteButton isSumitting={form.formState.isSubmitting} />
+                {isEditing
+                    ?
+                    <EditNoteButton isSumitting={form.formState.isSubmitting} />
+                    :
+                    <CreateNoteButton isSumitting={form.formState.isSubmitting} />
+                }
             </form>
         </Form>
     )
 }
 
 const CreateNoteButton = ({ isSumitting = false }) => {
-
     const btnTxt = isSumitting ? 'Creating' : 'Create Note'
+    const btnIcon = isSumitting ? <LoaderCircle className="animate-spin mr-3" /> : ''
+    return <Button
+        disabled={isSumitting}
+        type="submit"
+        className="shadow w-[12rem]"
+    >
+        {btnIcon} {btnTxt}
+    </Button>
+}
+const EditNoteButton = ({ isSumitting = false }) => {
+    const btnTxt = isSumitting ? 'Saving' : 'Save'
     const btnIcon = isSumitting ? <LoaderCircle className="animate-spin mr-3" /> : ''
     return <Button
         disabled={isSumitting}

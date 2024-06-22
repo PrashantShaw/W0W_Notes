@@ -10,9 +10,10 @@ import { Badge } from "@/components/ui/badge"
 import date from 'date-and-time';
 import { deleteManyNotes, updateNote } from "@/lib/actions/dashboard.actions"
 import { toast } from "@/components/ui/use-toast"
+import Link from "next/link"
 
 
-export type UpdateNoteData = Partial<Omit<INote, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
+export type PartialNoteData = Partial<Omit<INote, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
 
 const statusIcons = {
     ToDo: Circle,
@@ -24,7 +25,7 @@ const statusIcons = {
 
 async function updateTableData(
     itemId: string,
-    update: UpdateNoteData,
+    update: PartialNoteData,
     onSuccessFn: TableMeta<INote>['updateData']
 ) {
     const result = await updateNote(itemId, update)
@@ -162,9 +163,11 @@ export const notesColumns: ColumnDef<INote>[] = [
                             In Progress
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex items-center">
-                            <Pencil className="mr-2 h-4 w-4 text-slate-600" />Edit
-                        </DropdownMenuItem>
+                        <Link href={`/dashboard/notes/${rowId}/edit`}>
+                            <DropdownMenuItem className="flex items-center">
+                                <Pencil className="mr-2 h-4 w-4 text-slate-600" />Edit
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuItem
                             className="flex items-center"
                             onClick={() => deleteTableData([rowId], (table.options.meta?.deleteData!))}
