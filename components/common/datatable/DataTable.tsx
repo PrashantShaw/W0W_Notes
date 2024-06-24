@@ -2,6 +2,7 @@
 
 import {
     ColumnFiltersState,
+    PaginationState,
     RowData,
     RowSelectionState,
     SortingState,
@@ -62,6 +63,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     const [globalFilter, setGlobalFilter] = useState("")
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 7 })
 
     const table = useReactTable({
         data,
@@ -75,6 +77,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
         onColumnVisibilityChange: setColumnVisibility,
+        onPaginationChange: setPagination,
         globalFilterFn: 'includesString',
         state: {
             sorting,
@@ -82,6 +85,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
             globalFilter,
             rowSelection,
             columnVisibility,
+            pagination
         },
         getRowId: (originalRow, index, parent) => originalRow._id ?? String(index),
         meta: {
@@ -105,6 +109,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     console.log('dataTable data :: ', data)
 
     // FIXME: search filter is not working on 'Date Time' column
+    // TODO: add url query params for 'global search' and 'page index'
     return (
         <div className="w-full">
             <div className="flex items-center justify-between py-4">

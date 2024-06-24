@@ -90,7 +90,7 @@ export async function createOrUpdateNoteAction(
 export async function deleteManyNotes(noteIdsList: string[]) {
     try {
         console.log('noteIdsList :: ', noteIdsList)
-        const deleteResult = await Notes.deleteMany({ _id: { $in: noteIdsList } });
+        const deleteResult = await Notes.deleteMany({ _id: { $in: noteIdsList } }).lean();
         console.log('delete result :: ', deleteResult)
         return {
             message: 'Note Successfully Created',
@@ -116,11 +116,11 @@ export async function updateNote(
 ) {
     const filter = { _id: noteId }
     try {
-        const updateResult = await Notes.findOneAndUpdate(filter, update, { new: true })
+        const updateResult = await Notes.findOneAndUpdate(filter, update, { new: true }).lean()
         console.log('updateResult :: ', updateResult)
         return {
             message: 'Note Successfully Created',
-            data: updateResult,
+            data: getNormalObject(updateResult ?? {}),
             success: true,
             status: 200
         }
