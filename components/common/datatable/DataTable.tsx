@@ -33,7 +33,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DataTableProps } from "@/lib/utils/definitions"
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 /** 
  * Below declarations of module is for adding the 'updateData' function 
@@ -56,11 +57,16 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     deleteHandler
 }: DataTableProps<TData, TValue>) {
 
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const defaultSearchTxt = searchParams.get('search')?.toString()
+
     const [data, setData] = useState(tableData)
     const [columns] = useState(tableCols)
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [globalFilter, setGlobalFilter] = useState("")
+    const [globalFilter, setGlobalFilter] = useState(defaultSearchTxt ?? "")
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 7 })
@@ -108,6 +114,15 @@ export function DataTable<TData extends { _id?: string }, TValue>({
 
     console.log('dataTable data :: ', data)
 
+    const searchOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const searchTxt = event.target.value
+        table.setGlobalFilter(searchTxt)
+
+        const params = new URLSearchParams(searchParams.toString())
+        searchTxt !== '' ? params.set('search', searchTxt) : params.delete('search')
+        router.replace(`${pathname}?${params.toString()}`)
+    }
+
     // FIXME: search filter is not working on 'Date Time' column
     // TODO: add url query params for 'global search' and 'page index'
     return (
@@ -116,7 +131,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                 <Input
                     placeholder="Search"
                     value={globalFilter}
-                    onChange={(event) => table.setGlobalFilter(event.target.value)}
+                    onChange={searchOnChange}
                     className="max-w-sm"
                 />
                 <div className="flex gap-3">
