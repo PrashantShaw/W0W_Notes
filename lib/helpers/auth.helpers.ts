@@ -1,5 +1,4 @@
-import { IUser } from "../models/user.model";
-import { LoginResponse } from "../utils/definitions";
+import { IUser, LoginResponse } from "@/lib/utils/definitions";
 
 export const sleep = (ms = 2000) => new Promise(r => setTimeout(r, ms))
 

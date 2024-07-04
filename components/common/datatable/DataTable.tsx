@@ -33,8 +33,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DataTableProps } from "@/lib/utils/definitions"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useCallback, useMemo, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { debounce } from "@/lib/utils/functions"
 
 /** 
  * Below declarations of module is for adding the 'updateData' function 
@@ -67,6 +68,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = useState(defaultSearchTxt ?? "")
+    const [searchTxt, setSearchTxt] = useState(defaultSearchTxt ?? "")
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 7 })
@@ -114,23 +116,33 @@ export function DataTable<TData extends { _id?: string }, TValue>({
 
     console.log('dataTable data :: ', data)
 
-    const searchOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const searchTxt = event.target.value
+
+
+    const tiggerSearch = useCallback((searchTxt: string) => {
         table.setGlobalFilter(searchTxt)
 
         const params = new URLSearchParams(searchParams.toString())
         searchTxt !== '' ? params.set('search', searchTxt) : params.delete('search')
         router.replace(`${pathname}?${params.toString()}`)
-    }
+    }, [pathname, router, searchParams, table])
+
+    const debouncedSearch = useMemo(() => debounce(tiggerSearch, 500), [tiggerSearch])
+
+    const searchOnChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const searchTxt = event.target.value
+        setSearchTxt(searchTxt)
+        debouncedSearch(searchTxt)
+    }, [debouncedSearch])
 
     // FIXME: search filter is not working on 'Date Time' column
     // TODO: add url query params for 'global search' and 'page index'
+
     return (
         <div className="w-full">
             <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Search"
-                    value={globalFilter}
+                    value={searchTxt}
                     onChange={searchOnChange}
                     className="max-w-sm"
                 />
@@ -250,6 +262,4 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         </div>
     )
 }
-
-
 
