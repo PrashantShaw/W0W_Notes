@@ -10,14 +10,14 @@ import { revalidatePath } from "next/cache";
 
 
 // FIXME: add .lean() to the mongoose queries to have plain old javascript objects instead of mongoose document as response.
+/**
+ * Updates a note in the database if @param 'noteId' is provided 
+ * or else creates a new Note with @param 'noteData'
+ */
 export async function createOrUpdateNoteAction(
     noteData: NoteFormData,
     noteId?: string
 ) {
-    /**
-     * Updates a note in the database if @param 'noteId' is provided 
-     * or else creates a new Note with @param 'noteData'
-     */
     try {
         const validatedFields = ZNoteSchema.safeParse(noteData)
         console.log('CreateNoteAction data :: ', noteData, validatedFields)

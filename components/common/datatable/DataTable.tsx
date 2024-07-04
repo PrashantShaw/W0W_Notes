@@ -61,17 +61,21 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const defaultSearchTxt = searchParams.get('search')?.toString()
+    const defaultSearchTxt = searchParams.get('search')?.toString() ?? ""
+    const defaultPage = Number(searchParams.get('page')) || 1
 
     const [data, setData] = useState(tableData)
     const [columns] = useState(tableCols)
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [globalFilter, setGlobalFilter] = useState(defaultSearchTxt ?? "")
-    const [searchTxt, setSearchTxt] = useState(defaultSearchTxt ?? "")
+    const [globalFilter, setGlobalFilter] = useState(defaultSearchTxt)
+    const [searchTxt, setSearchTxt] = useState(defaultSearchTxt)
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-    const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 7 })
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: defaultPage - 1,
+        pageSize: 7
+    })
 
     const table = useReactTable({
         data,
@@ -114,7 +118,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         },
     })
 
-    console.log('dataTable data :: ', data)
+    // console.log('dataTable data :: ', data)
 
 
 
@@ -123,6 +127,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
 
         const params = new URLSearchParams(searchParams.toString())
         searchTxt !== '' ? params.set('search', searchTxt) : params.delete('search')
+        params.set('page', '1')
         router.replace(`${pathname}?${params.toString()}`)
     }, [pathname, router, searchParams, table])
 
@@ -134,8 +139,24 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         debouncedSearch(searchTxt)
     }, [debouncedSearch])
 
+    const changePage = useCallback((step: 'previous' | 'next') => {
+        const params = new URLSearchParams(searchParams.toString())
+        const currPage = table.getState().pagination.pageIndex + 1
+        let page;
+        if (step === 'next') {
+            table.nextPage()
+            page = currPage + 1
+        }
+        else {
+            table.previousPage()
+            page = currPage - 1
+        }
+
+        params.set('page', page.toString())
+        router.replace(`${pathname}?${params.toString()}`)
+    }, [searchParams, pathname, router, table])
+
     // FIXME: search filter is not working on 'Date Time' column
-    // TODO: add url query params for 'global search' and 'page index'
 
     return (
         <div className="w-full">
@@ -244,7 +265,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => table.previousPage()}
+                        onClick={() => changePage("previous")}
                         disabled={!table.getCanPreviousPage()}
                     >
                         Previous
@@ -252,7 +273,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => table.nextPage()}
+                        onClick={() => changePage("next")}
                         disabled={!table.getCanNextPage()}
                     >
                         Next
