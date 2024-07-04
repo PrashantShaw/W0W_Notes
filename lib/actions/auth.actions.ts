@@ -13,9 +13,6 @@ export async function SignupAction(formData: SignupFormData) {
     const validatedFields = ZSignupSchema.safeParse(formData)
     console.log('valiatedFields :: ', validatedFields)
 
-    // TODO: remove before deployment
-    // await sleep();
-
     if (!validatedFields.success) {
         const serverValidationErrors = Object.fromEntries(validatedFields?.error?.issues.map(({ path, message }) => [path[0], message]))
         return {

@@ -9,7 +9,7 @@ import { getNormalObject } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
 
-// FIXME: add .lean() to the mongoose queries to have plain old javascript objects instead of mongoose document as response.
+//  SomeModel.someMethod().lean() returns plain old javascript objects instead of mongoose document as response.
 /**
  * Updates a note in the database if @param 'noteId' is provided 
  * or else creates a new Note with @param 'noteData'
@@ -56,7 +56,7 @@ export async function createOrUpdateNoteAction(
             revalidatePath('/dashboard')
             return {
                 message: 'Note Successfully Updated!',
-                data: updatedNote,
+                data: getNormalObject(updatedNote ?? {}),
                 status: 200,
                 success: true,
             }
