@@ -4,7 +4,6 @@ import { INote, NoteFormData, ZNoteSchema } from "@/lib/utils/definitions";
 import { connectToDatabase } from "@/lib/database/db.connect";
 import Notes from "@/lib/models/notes.model";
 import { auth } from "@/auth/auth.config";
-import { redirect } from "next/navigation";
 import { getNormalObject } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 

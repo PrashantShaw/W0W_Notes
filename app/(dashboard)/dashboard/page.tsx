@@ -1,15 +1,11 @@
-import { auth } from '@/auth/auth.config'
 import NoteTable from '@/components/dashboard/Notes/NoteTable';
 import { Button } from '@/components/ui/button'
-import { getNotes } from '@/lib/helpers/dashboard.helpers';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react'
+import React, { Suspense } from 'react'
 
+// TODO: add loading shimmers for this as well as all other pages
 const DashboardPage = async () => {
-    const session = await auth();
-    const userId = session?.user.userId
-    const notes = await getNotes(userId!);
     // console.log('Dashboard page, notes :: ', notes)
 
     return (<>
@@ -21,8 +17,9 @@ const DashboardPage = async () => {
                 </div>
                 <CreateNoteButton />
             </div>
-            <NoteTable notes={notes} />
-
+            <Suspense fallback={<h1 className='text-center text-4xl font-semibold text-slate-300 pt-[10rem]'>loading ... </h1>}>
+                <NoteTable />
+            </Suspense>
         </div>
     </>)
 }
