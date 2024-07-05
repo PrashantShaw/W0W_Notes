@@ -5,7 +5,7 @@ const DashboardLayout = ({ children }: Readonly<{ children: React.ReactNode }>) 
     return (
         <main className='flex h-screen'>
             <SideNav />
-            <div className="flex-grow overflow-y-scroll">
+            <div className="flex-grow overflow-y-scroll border">
                 {children}
             </div>
         </main>
