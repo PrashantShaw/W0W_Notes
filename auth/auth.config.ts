@@ -65,7 +65,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
         }),
     ],
-    // TODO: save github logged in users to db
     callbacks: {
         jwt: ({ token, user, trigger }) => {
             console.log('--- jwt callback ---')

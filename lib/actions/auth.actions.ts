@@ -91,3 +91,7 @@ export async function LoginAction(formData: LoginFormData) {
 
     redirect("/dashboard")
 }
+// NOTE: cant redirect from inside of try/catch block
+export const OAuthLoginAction = async (provider: string) => {
+    await signIn(provider)
+}
