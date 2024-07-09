@@ -31,9 +31,8 @@ const SideNavLinks = ({ tooltipEnabled = true }) => {
             {links.map(({ label, href, icon: Icon }, idx) => {
                 const isActive = pathname === href
                 return (
-                    <WithTooltip tooltipComponent={<p >{label}</p>} side='right' enabled={tooltipEnabled}>
+                    <WithTooltip key={idx} tooltipComponent={<p >{label}</p>} side='right' enabled={tooltipEnabled}>
                         <LinkItem
-                            key={idx}
                             label={label}
                             href={href}
                             isActive={isActive}

@@ -8,30 +8,28 @@ export async function POST(request: NextRequest): Promise<NextResponse<LoginResp
     try {
         await connectToDatabase()
         const reqBody = await request.json();
-        const { email, password } = reqBody
+        const { email } = reqBody
 
         const user = await Users.findOne<IUser | null>({ email })
+        console.log('oauth user :: ', user)
 
-        if (!user) {
+        if (user) {
             return NextResponse.json({
-                message: 'User Not Found!',
-                status: 400,
-                success: false,
+                user,
+                message: 'OAuth Login Success!',
+                status: 200,
+                success: true
             })
         }
-        const passwordMatched = await bcrypt.compare(password, user.password)
 
-        if (!passwordMatched) {
-            return NextResponse.json({
-                message: "Invalid Credentials!",
-                status: 400,
-                success: false,
-            })
-        }
+        const newUser: IUser = await Users.create({
+            email,
+            password: "No password for OAuth users"
+        })
 
         return NextResponse.json({
-            user,
-            message: 'Login Success!',
+            user: newUser,
+            message: 'New OAuth user created!',
             status: 200,
             success: true
         })

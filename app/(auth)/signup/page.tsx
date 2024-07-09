@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Image from 'next/image'
+import githubIcon from "@/public/icons/Github.svg"
+import { signIn } from '@/auth/auth.config'
+
 
 const SignupPage = () => {
     return (
@@ -24,6 +28,16 @@ const SignupPage = () => {
                 </CardHeader>
                 <CardContent>
                     <SignupForm />
+                    <form
+                        className='mt-4 border'
+                        action={async () => {
+                            'use server'
+                            await signIn('github')
+                        }}
+                    >
+                        <Button variant={'outline'} className='w-full'>
+                            <Image src={githubIcon} alt="github Icon" className="mr-2" />Github</Button>
+                    </form>
                 </CardContent>
                 {/* <CardFooter>
                 </CardFooter> */}

@@ -1,7 +1,8 @@
-import { authenticateLogin } from "@/lib/helpers/auth.helpers";
+import { authenticateCredentialsLogin, authenticateOAuthLogin } from "@/lib/helpers/auth.helpers";
 import { IUser, ZLoginSchema } from "@/lib/utils/definitions";
-import NextAuth, { DefaultSession, User } from "next-auth"
+import NextAuth, { DefaultSession } from "next-auth"
 import credentials from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github"
 import { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
@@ -36,6 +37,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         updateAge: 60 * 10
     },
     providers: [
+        GitHub({
+            profile: async (data) => {
+                const oauthLoginResult = await authenticateOAuthLogin(data.email!)
+                return oauthLoginResult!
+            },
+        }),
         credentials({
             credentials: {
                 email: {},
@@ -51,15 +58,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 const { email, password } = validatedFields.data
-                const authResult = await authenticateLogin(email, password)
+                const authResult = await authenticateCredentialsLogin(email, password)
 
                 console.log('AuthResult :: ', authResult)
                 return authResult
             },
         }),
     ],
+    // TODO: save github logged in users to db
     callbacks: {
-        jwt: ({ token, user }) => {
+        jwt: ({ token, user, trigger }) => {
             console.log('--- jwt callback ---')
             console.log('token :: ', token)
             console.log('---------------------')
