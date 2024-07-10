@@ -11,6 +11,7 @@ import date from 'date-and-time';
 import { deleteManyNotes, updateNote } from "@/lib/actions/dashboard.actions"
 import { toast } from "@/components/ui/use-toast"
 import Link from "next/link"
+import StarIcon from "@/components/common/StarIcon"
 
 
 export type PartialNoteData = Partial<Omit<INote, '_id' | 'user' | 'createdAt' | 'updatedAt'>>
@@ -92,16 +93,26 @@ export const notesColumns: ColumnDef<INote>[] = [
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="ml-8"
                 >
                     Title
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">
-            <Badge variant="outline" className="rounded mx-3">{row.original.label}</Badge>
-            {row.getValue("title")}
-        </div>,
+        cell: ({ row, table }) => {
+            const { _id: rowId, label, starred } = row.original;
+            const isStarred = starred ?? false;
+            return <div className="flex items-center">
+                <span
+                    onClick={() => updateTableData(rowId, { starred: !isStarred }, (table.options.meta?.updateData!))}
+                >
+                    <StarIcon isSelected={isStarred} />
+                </span>
+                <Badge variant="outline" className="rounded mx-3">{label}</Badge>
+                <p>{row.getValue("title")}</p>
+            </div>
+        },
     },
     {
         accessorKey: "priority",

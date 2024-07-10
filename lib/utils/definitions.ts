@@ -42,6 +42,7 @@ export interface IUser extends Document {
 
 export interface INote extends Document {
     _id: string;
+    starred: boolean;
     title: string;
     description: string;
     priority: 'Low' | 'Medium' | 'High';

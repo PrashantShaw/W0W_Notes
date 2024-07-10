@@ -27,6 +27,10 @@ const notesSchema = new Schema({
         enum: ['Bug', 'Feature', 'Documentation',],
         default: 'Bug',
     },
+    starred: {
+        type: Boolean,
+        default: false,
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'users',
