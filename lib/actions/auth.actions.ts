@@ -58,7 +58,7 @@ export async function SignupAction(formData: SignupFormData) {
     }
 }
 
-export async function LoginAction(formData: LoginFormData) {
+export async function CredentialsLoginAction(formData: LoginFormData) {
     try {
         const { email, password } = formData
         await signIn('credentials', {
@@ -91,7 +91,18 @@ export async function LoginAction(formData: LoginFormData) {
 
     redirect("/dashboard")
 }
-// NOTE: cant redirect from inside of try/catch block
+// NOTE: cant redirect from inside of try/catch block, hence signIn()'s redirect wont work inside try/catch block
 export const OAuthLoginAction = async (provider: string) => {
-    await signIn(provider)
+    let redirectUrl;
+    try {
+        redirectUrl = await signIn(provider, { redirect: false })
+    } catch (error: any) {
+        return {
+            formError: 'Failed to Login with ' + provider,
+            message: error.message,
+            status: 500,
+            success: false
+        }
+    }
+    redirect(redirectUrl)
 }

@@ -6,6 +6,8 @@ import Image from 'next/image'
 import githubIcon from "@/public/icons/Github.svg"
 import { OAuthLoginAction } from '@/lib/actions/auth.actions'
 import { LoaderCircle } from 'lucide-react'
+import { ToastAction } from '@/components/ui/toast'
+import { toast } from '@/components/ui/use-toast'
 
 // FIXME: improve github login form
 const GithubForm = () => {
@@ -15,7 +17,16 @@ const GithubForm = () => {
         evt.preventDefault()
 
         setIsSubmitting(true);
-        await OAuthLoginAction('github')
+        const result = await OAuthLoginAction('github')
+
+        if (result && !result?.success) {
+            setIsSubmitting(false)
+            toast({
+                variant: 'destructive',
+                title: result?.formError,
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+            })
+        }
     }, [])
 
     return <form
@@ -28,7 +39,7 @@ const GithubForm = () => {
 }
 
 const SubmitButton = ({ isSubmiting = false }) => {
-    const btnTxt = isSubmiting ? 'Loading' : 'Github'
+    const btnTxt = isSubmiting ? 'Authenticating' : 'Github'
     const btnIcon = isSubmiting ?
         <LoaderCircle className="animate-spin mr-2" />
         :
@@ -37,7 +48,7 @@ const SubmitButton = ({ isSubmiting = false }) => {
     return <Button
         disabled={isSubmiting}
         type="submit"
-        className="w-full"
+        className="w-full shadow-sm"
         variant={"outline"}
     >
         {btnIcon} {btnTxt}

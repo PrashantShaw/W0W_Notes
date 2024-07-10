@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { LoginFormData, ZLoginSchema } from "@/lib/utils/definitions"
-import { LoginAction } from "@/lib/actions/auth.actions"
+import { CredentialsLoginAction } from "@/lib/actions/auth.actions"
 import { ToastAction } from "@/components/ui/toast"
 import { LoaderCircle } from "lucide-react"
 
@@ -30,7 +30,7 @@ export function LoginForm() {
     })
 
     async function onSubmit(data: LoginFormData) {
-        const result = await LoginAction(data)
+        const result = await CredentialsLoginAction(data)
 
         // console.log('Login Result: ', result)
         if (result && !result?.success) {
