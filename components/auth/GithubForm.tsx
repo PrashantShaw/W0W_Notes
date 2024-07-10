@@ -9,7 +9,6 @@ import { LoaderCircle } from 'lucide-react'
 import { ToastAction } from '@/components/ui/toast'
 import { toast } from '@/components/ui/use-toast'
 
-// FIXME: improve github login form
 const GithubForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     // const GithubLoginAction = OAuthLoginAction.bind(null, 'github')

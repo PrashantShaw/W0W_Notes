@@ -156,7 +156,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
         router.replace(`${pathname}?${params.toString()}`)
     }, [searchParams, pathname, router, table])
 
-    // FIXME: search filter is not working on 'Date Time' column
+    // FIXME: search filter is not working on 'Date Time' column and 'lable' badge
 
     return (
         <div className="w-full">

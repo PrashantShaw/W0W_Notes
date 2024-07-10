@@ -44,14 +44,14 @@ export function LoginForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 justify-between h-[24rem]">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 justify-between">
                 <div className="flex flex-col gap-5 justify-between ">
                     <FormField
                         control={form.control}
                         name="email"
                         render={({ field, fieldState: { error } }) => (
                             <FormItem>
-                                <FormLabel className="text-gray-700">Email</FormLabel>
+                                {/* <FormLabel className="text-gray-700">Email</FormLabel> */}
                                 <FormControl>
                                     <Input
                                         {...field}
@@ -72,7 +72,7 @@ export function LoginForm() {
                         name="password"
                         render={({ field, fieldState: { error } }) => (
                             <FormItem>
-                                <FormLabel className="text-gray-700">Password</FormLabel>
+                                {/* <FormLabel className="text-gray-700">Password</FormLabel> */}
                                 <FormControl>
                                     <Input
                                         {...field}
