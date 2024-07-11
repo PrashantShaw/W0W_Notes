@@ -20,12 +20,12 @@ const SideNav = () => {
                     isExpanded ? "w-[15rem]" : "w-[3.75rem]"
                 )}
             >
-                <div className="py-8 bg-slate-700 mb-8">
+                <div className="py-8 bg-zinc-900 mb-8">
                     <h2 className='text-2xl font-bold text-slate-200 font-mono text-center text-nowrap'>{isExpanded ? "WOW Notes" : "WN"}</h2>
                 </div>
                 <div className="flex flex-col justify-between flex-grow relative">
                     <SideNavLinks tooltipEnabled={!isExpanded} />
-                    <div className="flex flex-col py-4 gap-1">
+                    <div className="flex flex-col py-4 gap-1 border-t-[1px] border-t-slate-200">
                         <WithTooltip tooltipComponent={<p >Settings</p>} side='right' enabled={!isExpanded}>
                             <LinkItem label='Settings' href='/settings' isActive={false} icon={<Settings className='text-slate-600 h-5' />} />
                         </WithTooltip>

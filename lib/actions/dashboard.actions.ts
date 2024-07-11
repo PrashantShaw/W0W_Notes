@@ -91,6 +91,7 @@ export async function deleteManyNotes(noteIdsList: string[]) {
         console.log('noteIdsList :: ', noteIdsList)
         const deleteResult = await Notes.deleteMany({ _id: { $in: noteIdsList } }).lean();
         console.log('delete result :: ', deleteResult)
+        revalidatePath('/dashboard')
         return {
             message: 'Note Successfully Created',
             data: deleteResult,
@@ -106,7 +107,6 @@ export async function deleteManyNotes(noteIdsList: string[]) {
             status: 500,
         }
     }
-    // revalidatePath('/dashboard')
 }
 
 export async function updateNote(
@@ -117,6 +117,7 @@ export async function updateNote(
     try {
         const updateResult = await Notes.findOneAndUpdate(filter, update, { new: true }).lean()
         console.log('updateResult :: ', updateResult)
+        revalidatePath('/dashboard')
         return {
             message: 'Note Successfully Created',
             data: getNormalObject(updateResult ?? {}),

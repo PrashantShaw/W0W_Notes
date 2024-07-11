@@ -2,7 +2,7 @@
 import { auth } from '@/auth/auth.config'
 import { getNotes } from '@/lib/helpers/dashboard.helpers'
 import React from 'react'
-import NoteTableWrapper from '@/components/dashboard/Notes/NoteTableWrapper';
+import StarredTableWrapper from '@/components/dashboard/starred/StarredTableWraper';
 
 // FIXME: when unstarred it should be removed from the 'StarredTable'
 const StarredTable = async () => {
@@ -13,7 +13,7 @@ const StarredTable = async () => {
 
     return (
         <div className="">
-            <NoteTableWrapper notes={notes} />
+            <StarredTableWrapper notes={notes} />
         </div>
     )
 }
