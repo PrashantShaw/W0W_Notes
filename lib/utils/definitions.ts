@@ -81,4 +81,5 @@ export type DataTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
     data: Array<TData>
     deleteHandler?: (noteIdList: string[], tableDataDeleteHandler: TableMeta<INote>["deleteData"]) => Promise<void>
+    showRowContent?: (noteData: TData) => void,
 }

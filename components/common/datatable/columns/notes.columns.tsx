@@ -75,8 +75,9 @@ export const notesColumns: ColumnDef<INote>[] = [
             </div>
         ),
         cell: ({ row }) => (
-            <div className=" flex justify-center">
+            <div className=" flex justify-center" onClick={e => e.stopPropagation()}>
                 <Checkbox
+                    className="border-slate-300 hover:border-slate-900"
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
                     aria-label="Select row"
@@ -105,7 +106,10 @@ export const notesColumns: ColumnDef<INote>[] = [
             const isStarred = starred ?? false;
             return <div className="flex items-center">
                 <span
-                    onClick={() => updateTableData(rowId, { starred: !isStarred }, (table.options.meta?.updateData!))}
+                    onClick={(evt) => {
+                        evt.stopPropagation();
+                        updateTableData(rowId, { starred: !isStarred }, (table.options.meta?.updateData!))
+                    }}
                 >
                     <StarIcon isSelected={isStarred} />
                 </span>

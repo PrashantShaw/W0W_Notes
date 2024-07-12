@@ -55,7 +55,8 @@ declare module '@tanstack/table-core' {
 export function DataTable<TData extends { _id?: string }, TValue>({
     columns: tableCols,
     data: tableData,
-    deleteHandler
+    deleteHandler,
+    showRowContent
 }: DataTableProps<TData, TValue>) {
 
     const router = useRouter()
@@ -230,8 +231,10 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
+                                    className="cursor-pointer"
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => showRowContent && showRowContent(row.original)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
