@@ -19,11 +19,10 @@ import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { CircleCheckBig, LoaderCircle } from "lucide-react"
-import { sleep } from "@/lib/helpers/auth.helpers"
 import { createOrUpdateNoteAction } from "@/lib/actions/dashboard.actions"
 import { ToastAction } from "@/components/ui/toast"
 import { useRouter } from "next/navigation"
-import { revalidatePath } from "next/cache"
+import Link from "next/link"
 
 
 const defaultValues = {
@@ -192,6 +191,9 @@ export function NoteForm({ formValues }: NoteFormProps) {
                     :
                     <CreateNoteButton isSumitting={form.formState.isSubmitting} />
                 }
+                <Button type="button" className="ml-3 w-[12rem]" variant={"secondary"} asChild>
+                    <Link href={"/dashboard"} >Cancel</Link>
+                </Button>
             </form>
         </Form>
     )

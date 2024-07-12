@@ -231,7 +231,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
-                                    className="cursor-pointer"
+                                    className="cursor-pointer hover:shadow duration-300"
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                     onClick={() => showRowContent && showRowContent(row.original)}
