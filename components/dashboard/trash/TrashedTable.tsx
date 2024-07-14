@@ -7,8 +7,7 @@ const TrashedTable = async () => {
 
     const session = await auth();
     const userId = session?.user.userId
-    const filterOptions = { trashed: true }
-    const notes = await getNotes(userId!, filterOptions);
+    const notes = await getNotes(userId!, { trashed: true });
 
     return (
         <div className="">

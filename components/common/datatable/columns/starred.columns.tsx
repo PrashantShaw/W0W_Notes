@@ -77,11 +77,29 @@ async function toggleStarred(
     }
 }
 
+async function trashTableData(
+    itemId: string,
+    update: PartialNoteData,
+    onSuccessFn: TableMeta<INote>['deleteData']
+) {
+    const result = await updateNote(itemId, update)
+    if (result.success) {
+        onSuccessFn([itemId])
+        toast({
+            description: (
+                <div className="flex items-center gap-4 mb-2"><Trash2 color="orange" />
+                    <p className="font-semibold text-slate-900">Note Moved To Trash!</p>
+                </div>
+            ),
+        })
+    }
+}
+
 export const starredColumns: ColumnDef<INote>[] = [
     {
         id: "select",
         header: ({ table }) => (
-            <div className=" flex justify-center">
+            <div className=" flex justify-center" onClick={e => e.stopPropagation()}>
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||
@@ -93,7 +111,7 @@ export const starredColumns: ColumnDef<INote>[] = [
             </div>
         ),
         cell: ({ row }) => (
-            <div className=" flex justify-center">
+            <div className=" flex justify-center" onClick={e => e.stopPropagation()}>
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -123,7 +141,10 @@ export const starredColumns: ColumnDef<INote>[] = [
             const isStarred = starred ?? false;
             return <div className="flex items-center">
                 <span
-                    onClick={() => toggleStarred(rowId, { starred: !isStarred }, (table.options.meta?.deleteData!))}
+                    onClick={(evt) => {
+                        evt.stopPropagation();
+                        toggleStarred(rowId, { starred: !isStarred }, (table.options.meta?.deleteData!))
+                    }}
                 >
                     <StarIcon isSelected={isStarred} />
                 </span>
@@ -176,7 +197,7 @@ export const starredColumns: ColumnDef<INote>[] = [
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                             className="flex items-center"
@@ -199,7 +220,7 @@ export const starredColumns: ColumnDef<INote>[] = [
                         </Link>
                         <DropdownMenuItem
                             className="flex items-center"
-                            onClick={() => deleteTableData([rowId], (table.options.meta?.deleteData!))}
+                            onClick={() => trashTableData(rowId, { trashed: true }, (table.options.meta?.deleteData!))}
                         >
                             <Trash2 className="mr-2 h-4 w-4 text-slate-600" /> Trash
                         </DropdownMenuItem>

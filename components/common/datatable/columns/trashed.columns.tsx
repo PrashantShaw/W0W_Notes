@@ -3,14 +3,13 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef, TableMeta } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Circle, CircleCheck, CircleCheckBig, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ArchiveRestore, ArrowUpDown, Circle, CircleCheck, CircleCheckBig, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, X } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { INote } from "@/lib/utils/definitions"
 import { Badge } from "@/components/ui/badge"
 import date from 'date-and-time';
 import { deleteManyNotes, updateNote } from "@/lib/actions/dashboard.actions"
 import { toast } from "@/components/ui/use-toast"
-import Link from "next/link"
 import StarIcon from "@/components/common/StarIcon"
 
 
@@ -59,7 +58,7 @@ async function deleteTableData(
     }
 }
 
-async function trashTableData(
+async function restoreTableData(
     itemId: string,
     update: PartialNoteData,
     onSuccessFn: TableMeta<INote>['deleteData']
@@ -69,15 +68,15 @@ async function trashTableData(
         onSuccessFn([itemId])
         toast({
             description: (
-                <div className="flex items-center gap-4 mb-2"><Trash2 color="orange" />
-                    <p className="font-semibold text-slate-900">Note Moved To Trash!</p>
+                <div className="flex items-center gap-4 mb-2"><ArchiveRestore color="green" />
+                    <p className="font-semibold text-slate-900">Note Successfully Restored!</p>
                 </div>
             ),
         })
     }
 }
 
-export const notesColumns: ColumnDef<INote>[] = [
+export const trashedColumns: ColumnDef<INote>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -95,7 +94,6 @@ export const notesColumns: ColumnDef<INote>[] = [
         cell: ({ row }) => (
             <div className=" flex justify-center" onClick={e => e.stopPropagation()}>
                 <Checkbox
-                    className="border-slate-300 hover:border-slate-900"
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
                     aria-label="Select row"
@@ -127,8 +125,7 @@ export const notesColumns: ColumnDef<INote>[] = [
                     onClick={(evt) => {
                         evt.stopPropagation();
                         updateTableData(rowId, { starred: !isStarred }, (table.options.meta?.updateData!))
-                    }}
-                >
+                    }}                >
                     <StarIcon isSelected={isStarred} />
                 </span>
                 <Badge variant="outline" className="rounded mx-3">{label}</Badge>
@@ -184,28 +181,15 @@ export const notesColumns: ColumnDef<INote>[] = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                             className="flex items-center"
-                            onClick={() => updateTableData(rowId, { status: 'Done' }, (table.options.meta?.updateData!))}
+                            onClick={() => restoreTableData(rowId, { trashed: false }, (table.options.meta?.deleteData!))}
                         >
-                            <CircleCheck className="mr-2 h-4 w-4 text-slate-600" /> Done
+                            <ArchiveRestore className="mr-2 h-4 w-4 text-slate-600" /> Restore
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={() => updateTableData(rowId, { status: 'In Progress' }, (table.options.meta?.updateData!))}
                             className="flex items-center"
+                            onClick={() => deleteTableData([rowId], (table.options.meta?.deleteData!))}
                         >
-                            <CircleDotDashed className="mr-2 h-4 w-4 text-slate-600" />
-                            In Progress
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <Link href={`/dashboard/notes/${rowId}/edit`}>
-                            <DropdownMenuItem className="flex items-center">
-                                <Pencil className="mr-2 h-4 w-4 text-slate-600" />Edit
-                            </DropdownMenuItem>
-                        </Link>
-                        <DropdownMenuItem
-                            className="flex items-center"
-                            onClick={() => trashTableData(rowId, { trashed: true }, (table.options.meta?.deleteData!))}
-                        >
-                            <Trash2 className="mr-2 h-4 w-4 text-slate-600" /> Trash
+                            <X className="mr-2 h-4 w-4 text-slate-600" /> Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

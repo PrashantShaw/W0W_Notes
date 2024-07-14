@@ -66,6 +66,7 @@ export async function createOrUpdateNoteAction(
         savedNote = getNormalObject(savedNote)
         console.log('saved Note :: ', savedNote)
 
+        revalidatePath('/dashboard')
         return {
             message: 'Note Successfully Created',
             data: savedNote,

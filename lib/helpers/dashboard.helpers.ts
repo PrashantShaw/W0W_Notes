@@ -16,6 +16,7 @@ export async function getNotes(userId: string, filterOptions?: GetNoteFilter) {
         const notes = await Notes.find(filter)
 
         const normalObj: INote[] = getNormalObject(notes)
+        console.log(normalObj, filter)
         return normalObj
 
     } catch (error) {

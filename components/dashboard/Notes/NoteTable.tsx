@@ -8,7 +8,7 @@ const NoteTable = async () => {
 
     const session = await auth();
     const userId = session?.user.userId
-    const notes = await getNotes(userId!);
+    const notes = await getNotes(userId!, { trashed: false });
 
     return (
         <div className="">

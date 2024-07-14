@@ -4,10 +4,10 @@ import { DataTable } from '@/components/common/datatable/DataTable'
 import { deleteManyNotes } from '@/lib/actions/dashboard.actions'
 import { toast } from '@/components/ui/use-toast'
 import { CircleCheckBig } from 'lucide-react'
-import { starredColumns } from '@/components/common/datatable/columns/starred.columns'
 import { INote } from '@/lib/utils/definitions'
 import { TableMeta } from '@tanstack/react-table'
 import NoteDialog from '@/components/common/NoteDialog'
+import { trashedColumns } from '@/components/common/datatable/columns/trashed.columns'
 
 type TrashedTableWrapperProps = {
     notes: INote[]
@@ -41,7 +41,7 @@ const TrashedTableWrapper = ({ notes }: TrashedTableWrapperProps) => {
         <div className=''>
             <DataTable
                 data={notes}
-                columns={starredColumns}
+                columns={trashedColumns}
                 deleteHandler={deleteHandler}
                 showRowContent={showRowContent}
             />
