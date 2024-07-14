@@ -7,8 +7,9 @@ import React, { Suspense } from 'react'
 // TODO: add loading shimmers for this as well as all other pages
 // TODO: replace revalidatePath() with revalidateTags() for server actions
 // TODO: add 'move to trash' feature and trashedTable
-// TODO: add click to view task description as currently cant view task description
 // TODO: add shadcn themeing
+// TODO: make the design responsive
+
 const DashboardPage = async () => {
     // console.log('Dashboard page, notes :: ', notes)
 

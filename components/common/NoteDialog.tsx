@@ -38,24 +38,25 @@ const NoteDialog = ({ open, setOpen, note }: NoteDoalogProps) => {
                         <h2 className='text-2xl'>{note?.title}</h2>
                         <Badge>{note?.label}</Badge>
                     </DialogTitle>
-                    <DialogDescription className='text-lg leading-6 pt-3 pb-2'>
-                        {note?.description}
+                    <div className="grid grid-cols-2 pt-6 pb-4">
+                        <div className="">
+                            <p className='text-sm text-slate-400'>Priority</p>
+                            <p className='text-lg '>{note?.priority}</p>
+                        </div>
+                        <div className="">
+                            <p className='text-sm text-slate-400'>Status</p>
+                            <p className='text-lg '>{note?.status}</p>
+                        </div>
+                    </div>
+                    <div className="">
+                        <p className='text-right text-xs text-slate-400'>Created At</p>
+                        <p className='text-right text-sm text-slate-400'>{datTimeFormatted}</p>
+                    </div>
+                    <DialogDescription className='text-lg text-slate-700 leading-6 pb-6'>
+                        <p className='text-sm text-slate-400 pb-1'>Description</p>
+                        <p>{note?.description}</p>
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid grid-cols-2">
-                    <div className="">
-                        <p className='text-sm'>Priority</p>
-                        <p className='text-lg font-semibold'>{note?.priority}</p>
-                    </div>
-                    <div className="">
-                        <p className='text-sm'>Status</p>
-                        <p className='text-lg font-semibold'>{note?.status}</p>
-                    </div>
-                </div>
-                <div className="mt-[2rem]">
-                    <p className='text-right text-xs text-slate-400'>Created At</p>
-                    <p className='text-right text-sm text-slate-400'>{datTimeFormatted}</p>
-                </div>
 
                 <DialogFooter className="">
                     <Button className='w-[6rem]' asChild>

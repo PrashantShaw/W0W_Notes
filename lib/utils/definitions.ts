@@ -42,7 +42,6 @@ export interface IUser extends Document {
 
 export interface INote extends Document {
     _id: string;
-    starred: boolean;
     title: string;
     description: string;
     priority: 'Low' | 'Medium' | 'High';
@@ -51,6 +50,8 @@ export interface INote extends Document {
     user: typeof Schema.Types.ObjectId;
     createdAt?: Date;
     updatedAt?: Date;
+    starred: boolean;
+    trashed: boolean;
 }
 
 export type LoginResponse = {

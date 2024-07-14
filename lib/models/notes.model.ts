@@ -31,6 +31,10 @@ const notesSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    trashed: {
+        type: Boolean,
+        default: false,
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'users',

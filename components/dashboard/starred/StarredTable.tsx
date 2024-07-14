@@ -8,7 +8,7 @@ const StarredTable = async () => {
 
     const session = await auth();
     const userId = session?.user.userId
-    const notes = await getNotes(userId!, true);
+    const notes = await getNotes(userId!, { starred: true });
 
     return (
         <div className="">

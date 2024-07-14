@@ -3,7 +3,7 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef, TableMeta } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Circle, CircleCheck, CircleCheckBig, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { ArrowUpDown, Circle, CircleCheck, CircleCheckBig, CircleDotDashed, CircleHelp, CircleX, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { INote } from "@/lib/utils/definitions"
 import { Badge } from "@/components/ui/badge"
@@ -187,7 +187,7 @@ export const notesColumns: ColumnDef<INote>[] = [
                             className="flex items-center"
                             onClick={() => deleteTableData([rowId], (table.options.meta?.deleteData!))}
                         >
-                            <Trash className="mr-2 h-4 w-4 text-slate-600" /> Delete
+                            <Trash2 className="mr-2 h-4 w-4 text-slate-600" /> Trash
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

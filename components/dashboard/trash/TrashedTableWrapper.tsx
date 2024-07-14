@@ -9,10 +9,11 @@ import { INote } from '@/lib/utils/definitions'
 import { TableMeta } from '@tanstack/react-table'
 import NoteDialog from '@/components/common/NoteDialog'
 
-type NoteTableWrapperProps = {
+type TrashedTableWrapperProps = {
     notes: INote[]
 }
-const StarredTableWrapper = ({ notes }: NoteTableWrapperProps) => {
+
+const TrashedTableWrapper = ({ notes }: TrashedTableWrapperProps) => {
     const [showRowDialog, setShowRowDialog] = useState(false)
     const [rowContent, setRowContent] = useState<INote | null>(null)
 
@@ -53,4 +54,4 @@ const StarredTableWrapper = ({ notes }: NoteTableWrapperProps) => {
     )
 }
 
-export default StarredTableWrapper
+export default TrashedTableWrapper
