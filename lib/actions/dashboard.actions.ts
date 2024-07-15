@@ -109,6 +109,34 @@ export async function deleteManyNotes(noteIdsList: string[]) {
         }
     }
 }
+export async function updateManyNotes(
+    noteIdsList: string[],
+    update: Partial<Omit<INote, '_id' | 'user' | 'createdAt' | 'updatedAt'>>,
+) {
+    try {
+        console.log('noteIdsList :: ', noteIdsList)
+        const updatedResult = await Notes.updateMany(
+            { _id: { $in: noteIdsList } },
+            { $set: update },
+        ).lean();
+        console.log('updated result :: ', updatedResult)
+        revalidatePath('/dashboard')
+        return {
+            message: 'Note(s) Successfully Updated',
+            data: updatedResult,
+            success: true,
+            status: 200
+        }
+    } catch (error: any) {
+        console.log('Server Error: Failed to Delete Notes! :: ', error)
+        return {
+            message: 'Server Error: Failed to Delete Notes!',
+            data: null,
+            success: false,
+            status: 500,
+        }
+    }
+}
 
 export async function updateNote(
     noteId: string,

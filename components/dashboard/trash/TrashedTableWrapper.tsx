@@ -42,6 +42,7 @@ const TrashedTableWrapper = ({ notes }: TrashedTableWrapperProps) => {
             <DataTable
                 data={notes}
                 columns={trashedColumns}
+                enableDelete={true}
                 deleteHandler={deleteHandler}
                 showRowContent={showRowContent}
             />

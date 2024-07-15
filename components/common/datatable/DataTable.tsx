@@ -14,7 +14,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown, Trash2 } from "lucide-react"
+import { ChevronDown, CircleX, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -36,6 +36,8 @@ import { DataTableProps } from "@/lib/utils/definitions"
 import { ChangeEvent, useCallback, useMemo, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { debounce } from "@/lib/utils/functions"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import WithTooltip from "../WithTooltip"
 
 /** 
  * Below declarations of module is for adding the 'updateData' function 
@@ -56,7 +58,8 @@ export function DataTable<TData extends { _id?: string }, TValue>({
     columns: tableCols,
     data: tableData,
     deleteHandler,
-    showRowContent
+    showRowContent,
+    enableDelete
 }: DataTableProps<TData, TValue>) {
 
     const router = useRouter()
@@ -169,15 +172,41 @@ export function DataTable<TData extends { _id?: string }, TValue>({
                     className="max-w-sm"
                 />
                 <div className="flex gap-3">
-                    <Button
-                        type="submit"
-                        variant="outline"
-                        size="icon"
-                        disabled={Object.keys(rowSelection).length === 0}
-                        onClick={() => deleteHandler && deleteHandler(Object.keys(rowSelection), table.options.meta?.deleteData!)}
-                    >
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider delayDuration={0}>
+                        {enableDelete ?
+                            <WithTooltip
+                                tooltipComponent={<p >Delete All</p>}
+                                side='top'
+                                enabled={Object.keys(rowSelection).length > 0}
+                            >
+                                <Button
+                                    type="submit"
+                                    variant="outline"
+                                    size="icon"
+                                    disabled={Object.keys(rowSelection).length === 0}
+                                    onClick={() => deleteHandler && deleteHandler(Object.keys(rowSelection), table.options.meta?.deleteData!)}
+                                >
+                                    <CircleX className="h-4 w-4" />
+                                </Button>
+                            </WithTooltip>
+                            :
+                            <WithTooltip
+                                tooltipComponent={<p >Trash All</p>}
+                                side='top'
+                                enabled={Object.keys(rowSelection).length > 0}
+                            >
+                                <Button
+                                    type="submit"
+                                    variant="outline"
+                                    size="icon"
+                                    disabled={Object.keys(rowSelection).length === 0}
+                                    onClick={() => deleteHandler && deleteHandler(Object.keys(rowSelection), table.options.meta?.deleteData!)}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </WithTooltip>
+                        }
+                    </TooltipProvider>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
