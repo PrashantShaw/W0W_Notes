@@ -32,7 +32,7 @@ const NoteDialog = ({ open, setOpen, note }: NoteDoalogProps) => {
             open={open}
             onOpenChange={setOpen}
         >
-            <DialogContent className="sm:max-w-md" >
+            <DialogContent className="sm:max-w-md max-w-[90%] rounded-md" >
                 <DialogHeader>
                     <DialogTitle className='flex items-center gap-2'>
                         <h2 className='text-2xl'>{note?.title}</h2>
@@ -58,7 +58,7 @@ const NoteDialog = ({ open, setOpen, note }: NoteDoalogProps) => {
                     </DialogDescription>
                 </DialogHeader>
 
-                <DialogFooter className="">
+                <DialogFooter className="flex flex-row justify-center gap-3">
                     <Button className='w-[6rem]' asChild>
                         <Link href={`/dashboard/notes/${note?._id}/edit`}>Edit</Link>
                     </Button>

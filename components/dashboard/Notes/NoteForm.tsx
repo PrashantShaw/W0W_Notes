@@ -72,7 +72,7 @@ export function NoteForm({ formValues }: NoteFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
-                <div className="grid grid-cols-3 gap-5 ">
+                <div className="grid sm:grid-cols-3 gap-5 ">
                     <FormField
                         control={form.control}
                         name="priority"
@@ -184,16 +184,17 @@ export function NoteForm({ formValues }: NoteFormProps) {
                         </FormItem>
                     )}
                 />
-                <div className=""></div>
-                {isEditing
-                    ?
-                    <EditNoteButton isSumitting={form.formState.isSubmitting} />
-                    :
-                    <CreateNoteButton isSumitting={form.formState.isSubmitting} />
-                }
-                <Button type="button" className="ml-3 w-[12rem]" variant={"secondary"} asChild>
-                    <Link href={"/dashboard"} >Cancel</Link>
-                </Button>
+                <div className="flex flex-row flex-wrap gap-3 pt-6">
+                    {isEditing
+                        ?
+                        <EditNoteButton isSumitting={form.formState.isSubmitting} />
+                        :
+                        <CreateNoteButton isSumitting={form.formState.isSubmitting} />
+                    }
+                    <Button type="button" className=" w-[12rem]" variant={"secondary"} asChild>
+                        <Link href={"/dashboard"} >Cancel</Link>
+                    </Button>
+                </div>
             </form>
         </Form>
     )

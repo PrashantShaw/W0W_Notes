@@ -164,7 +164,7 @@ export function DataTable<TData extends { _id?: string }, TValue>({
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between py-4">
+            <div className="flex items-center justify-between flex-wrap py-4 gap-3">
                 <Input
                     placeholder="Search"
                     value={searchTxt}

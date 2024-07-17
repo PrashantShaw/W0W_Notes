@@ -6,10 +6,10 @@ import { Sparkle } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-8 bg-slate-200">
-      <h1 className="text-[4rem] font-bold ">Wow Notes App</h1>
+    <main className="flex flex-col items-center justify-center min-h-screen p-4 md:p-8 bg-slate-200">
+      <h1 className="text-[3rem] leading-[3.5rem] text-center md:text-[4rem] md:leading-[4.5rem] font-bold mb-4">Wow Notes App</h1>
       <p className="text-lg text-slate-700 text-center max-w-[40rem] mb-[3rem]">Boost your productivity by managing all your dev tasks in a single place. Loved and appreciated by the devs all over the globe.</p>
-      <div className="flex gap-4">
+      <div className="flex justify-center gap-4 flex-wrap">
         <Button
           variant={"default"}
           size={"default"}
