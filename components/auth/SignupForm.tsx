@@ -43,7 +43,7 @@ export function SignupForm() {
           <>
             <div className="flex items-center gap-2 mb-2">
               <CircleCheckBig color="green" />
-              <p className="font-semibold text-lg text-slate-800">
+              <p className="font-semibold text-lg text-secondary-foreground">
                 {result.message}
               </p>
             </div>
