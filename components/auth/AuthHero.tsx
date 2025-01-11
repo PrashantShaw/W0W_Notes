@@ -1,34 +1,31 @@
-import React from 'react'
+import React from "react";
 
 const AuthHero = () => {
-    return <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-        <div className="absolute inset-0 bg-zinc-900" />
-        <div className="relative z-20 flex items-center text-lg font-medium">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2 h-6 w-6"
-            >
-                <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-            </svg>
-            Wow Notes
+  return (
+    <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+      <div className="absolute inset-0 bg-yellow-500" />
+      <div className="relative z-20 text-lg font-medium h-full grid place-items-center pb-6">
+        <div className=" flex flex-col py-6 px-8 ">
+          <p className="  text-[6rem] leading-[6rem] font-bold italic drop-shadow-xl">
+            WOW
+          </p>
+          <p className="pl-[4rem] text-[6rem] leading-[6rem] font-bold italic drop-shadow-xl">
+            NOTES
+          </p>
         </div>
-        <div className="relative z-20 mt-auto">
-            <blockquote className="space-y-2">
-                <p className="text-lg">
-                    &ldquo;This App has saved me countless hours of work and
-                    helped me deliver efficient workflow to my clients faster than
-                    ever before.&rdquo;
-                </p>
-                <footer className="text-sm text-slate-400">Sofia Davis</footer>
-            </blockquote>
-        </div>
+      </div>
+      <div className="relative z-20 mt-auto">
+        <blockquote className="space-y-2">
+          <p className="text-lg">
+            &ldquo;This App has saved me countless hours of work and helped me
+            deliver efficient workflow to my clients faster than ever
+            before.&rdquo;
+          </p>
+          <footer className="text-sm text-muted-foreground">Sofia Davis</footer>
+        </blockquote>
+      </div>
     </div>
-}
+  );
+};
 
-export default AuthHero
+export default AuthHero;
