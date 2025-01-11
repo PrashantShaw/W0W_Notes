@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "@/components/globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "./Providers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,7 +12,8 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: "Wow Notes",
-  description: "Boost your productivity by managing all your dev tasks in a single place. Loved and appreciated by the devs all over the globe.",
+  description:
+    "Boost your productivity by managing all your dev tasks in a single place. Loved and appreciated by the devs all over the globe.",
 };
 
 export default function RootLayout({
@@ -27,7 +29,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        {children}
+        <Providers>{children}</Providers>
         <Toaster />
       </body>
     </html>
