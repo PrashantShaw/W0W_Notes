@@ -10,7 +10,7 @@ const StarredNotes = () => {
             <h1 className="text-3xl text-secondary-foreground font-semibold mb-2">
               Starred Notes
             </h1>
-            <p className="text-slate-600">
+            <p className="text-muted-foreground">
               All your starred notes at one place, keep starring!
             </p>
           </div>

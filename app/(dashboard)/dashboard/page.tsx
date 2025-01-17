@@ -6,7 +6,6 @@ import React, { Suspense } from "react";
 
 // TODO: add loading shimmers
 // TODO: replace revalidatePath() with revalidateTags() for server actions
-// TODO: add shadcn themeing
 
 const DashboardPage = async () => {
   // console.log('Dashboard page, notes :: ', notes)
@@ -19,7 +18,7 @@ const DashboardPage = async () => {
             <h1 className="text-3xl text-secondary-foreground font-semibold mb-2">
               All Notes
             </h1>
-            <p className="text-slate-600">
+            <p className="text-muted-foreground">
               A dashboard to manage all your notes, however you like!
             </p>
           </div>
