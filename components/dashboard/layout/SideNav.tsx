@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WithTooltip from "@/components/common/WithTooltip";
 import ToggleThemeSidebarButton from "./ToggleThemeSidebarButton";
+import Image from "next/image";
 
 const SideNav = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -23,10 +24,23 @@ const SideNav = () => {
             isExpanded ? "w-[15rem]" : "w-0 md:w-[3.75rem]"
           )}
         >
-          <div className="py-8 bg-primary mb-8">
-            <h2 className="text-2xl font-bold text-primary-foreground font-mono text-center text-nowrap">
-              {isExpanded ? "WOW Notes" : "WN"}
-            </h2>
+          <div className="py-8 bg-primary mb-8 ">
+            <div
+              className={clsx(
+                "flex gap-[1rem] items-center justify-start transition-all",
+                isExpanded ? "px-6" : "px-[0.875rem]"
+              )}
+            >
+              <Image
+                src={"/icon-dark.png"}
+                alt="Brand Logo"
+                width={32}
+                height={32}
+              />
+              <p className="font-bold text-2xl text-primary-foreground text-nowrap">
+                Wow Notes
+              </p>
+            </div>
           </div>
           <div className="flex flex-col justify-between flex-grow relative">
             <SideNavLinks tooltipEnabled={!isExpanded} />

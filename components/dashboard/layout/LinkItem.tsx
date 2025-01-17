@@ -15,7 +15,9 @@ const LinkItem = ({ label, href, isActive = false, icon }: LinkItemProps) => {
         <div
           className={clsx(
             "flex gap-[1rem] items-center",
-            isActive ? "text-primary-foreground" : "text-secondary-foreground"
+            isActive
+              ? "text-primary-foreground font-medium"
+              : "text-secondary-foreground"
           )}
         >
           {icon}
