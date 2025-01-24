@@ -7,6 +7,8 @@ import React, { Suspense } from "react";
 // TODO: add loading shimmers
 // TODO: replace revalidatePath() with revalidateTags() for server actions
 
+// FIXME: github login not working after deployment on vercel
+
 const DashboardPage = async () => {
   // console.log('Dashboard page, notes :: ', notes)
 
